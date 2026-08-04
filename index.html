@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Christian Bolorinos</title>
+	<meta name="description" content="Christian Bolorinos | Designer, Developer, Communicator">
+	<meta name="keywords" content="Christian Bolorinos, cbolorinos, web design, graphic design, branding, product design, UX research, designer, developer, portfolio">
+	<meta name="author" content="Christian Bolorinos">
+	<meta name="theme-color" content="#13131e">
+
+	<!-- Open Graph -->
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content="Christian Bolorinos | Designer, Developer, Communicator" />
+	<meta property="og:description" content="Product Design, Web Design, Motion Graphics, Branding, Front End Web Development, UX Research" />
+	<meta property="og:image" content="https://cbolorinos.com/assets/images/og-image.jpg" />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+
+	<link rel="icon" type="image/png" href="favicon.png">
+	<link href="assets/images/ico/apple-touch-icon-144-precomposed.png" rel="apple-touch-icon" sizes="144x144" />
+
+	<!-- Fonts -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=PT+Sans+Narrow:wght@400;700&display=swap" rel="stylesheet">
+
+	<link rel="stylesheet" href="assets/css/style.css?v=6">
+</head>
+<body>
+
+	<!-- Scroll progress -->
+	<div class="scroll-progress" id="scrollProgress"><i></i></div>
+
+	<!-- Onboarding chatbot -->
+	<div class="onboarding" id="onboarding" role="dialog" aria-modal="true" aria-label="Personalize this site" aria-hidden="true">
+		<div class="onboarding__overlay"></div>
+		<div class="onboarding__card">
+			<div class="onboarding__head">
+				<span class="onboarding__avatar">
+					<svg viewBox="0 0 24 24" fill="#fff"><g><rect x="11" y="1" width="2" height="3" rx="1"/><circle cx="12" cy="1.5" r="1.5"/></g><g><rect x="3" y="4" width="18" height="13" rx="2"/><rect x="7" y="8" width="3" height="3" rx="1" fill="#43486b"/><rect x="14" y="8" width="3" height="3" rx="1" fill="#43486b"/><rect x="8" y="13" width="8" height="2" rx="1" fill="#43486b"/><rect x="1" y="7" width="2" height="4" rx="1"/><rect x="21" y="7" width="2" height="4" rx="1"/></g></svg>
+				</span>
+				<div class="onboarding__title">
+					<div class="name">Christian&rsquo;s Assistant</div>
+					<div class="status">Let&rsquo;s tailor your visit</div>
+				</div>
+				<button class="onboarding__skip" id="obSkip">Skip</button>
+			</div>
+			<div class="onboarding__body" id="obBody"></div>
+			<div class="onboarding__options" id="obOptions"></div>
+			<div class="onboarding__progress"><i id="obProgress"></i></div>
+		</div>
+	</div>
+
+	<!-- Preloader -->
+	<div class="preloader" id="preloader">
+		<div class="preloader__mark">
+			<span>C</span><span>B</span>
+		</div>
+		<div class="preloader__bar"><i></i></div>
+	</div>
+
+	<!-- Custom cursor -->
+	<div class="cursor" id="cursorDot"></div>
+	<div class="cursor-ring" id="cursorRing"></div>
+
+	<!-- Animated background -->
+	<div class="bg-canvas" aria-hidden="true">
+		<div class="bg-gradient"></div>
+		<svg class="bg-svg" viewBox="0 0 1200 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+			<defs>
+				<linearGradient id="blobA" x1="0" y1="0" x2="1" y2="1">
+					<stop offset="0%" stop-color="#a3957c"/>
+					<stop offset="100%" stop-color="#bcac8f"/>
+				</linearGradient>
+				<linearGradient id="blobB" x1="0" y1="0" x2="1" y2="1">
+					<stop offset="0%" stop-color="#74789f"/>
+					<stop offset="100%" stop-color="#43486b"/>
+				</linearGradient>
+				<linearGradient id="blobC" x1="0" y1="1" x2="1" y2="0">
+					<stop offset="0%" stop-color="#43486b"/>
+					<stop offset="100%" stop-color="#13131e"/>
+				</linearGradient>
+			</defs>
+			<path class="blob blob--a" fill="url(#blobA)" d="M600 250 Q760 200 820 360 Q880 520 700 580 Q520 640 430 500 Q340 360 480 300 Q540 280 600 250Z"/>
+			<path class="blob blob--b" fill="url(#blobB)" d="M300 180 Q430 140 470 280 Q510 420 360 460 Q210 500 170 360 Q130 220 300 180Z"/>
+			<path class="blob blob--c" fill="url(#blobC)" d="M900 560 Q1030 520 1060 650 Q1090 780 950 810 Q810 840 780 700 Q750 560 900 560Z"/>
+		</svg>
+		<div class="bg-grain"></div>
+	</div>
+
+	<!-- Navigation -->
+	<header class="nav" id="nav">
+		<div class="nav__inner">
+			<a class="nav__brand" href="#home" data-cursor="link">
+				<img src="assets/images/logo.png" alt="Christian Bolorinos" />
+			</a>
+			<nav class="nav__menu" id="navMenu">
+				<a href="#home">Home</a>
+				<a href="#about">About</a>
+				<a href="#works">Portfolio</a>
+				<a href="#resume">Resume</a>
+				<a href="#skills">Skills</a>
+				<a href="#contact">Contact</a>
+			</nav>
+			<button class="nav__toggle" id="navToggle" aria-label="Menu"><span></span><span></span><span></span></button>
+		</div>
+	</header>
+
+	<!-- Hero -->
+	<section class="hero" id="home">
+		<div class="hero__content">
+			<p class="hero__eyebrow reveal">Artistry &amp; Design</p>
+			<h1 class="hero__title">
+				<span class="reveal-word">Christian</span>
+				<span class="reveal-word hero__title--accent">Bolorinos</span>
+			</h1>
+			<p class="hero__lede reveal">Designer, developer &amp; communicator working across product design, UX research and emerging technology.</p>
+			<div class="hero__actions reveal">
+				<a class="btn btn--solid magnetic" href="#contact" data-cursor="link">Get in Touch</a>
+				<a class="btn btn--ghost magnetic" href="#works" data-cursor="link">View Work</a>
+			</div>
+			<div class="hero__social reveal">
+				<a href="https://github.com/cbolorinos" target="_blank" rel="noopener" aria-label="GitHub" data-cursor="link">
+					<svg viewBox="0 0 24 24"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg>
+				</a>
+				<a href="https://www.linkedin.com/in/cbolorinos" target="_blank" rel="noopener" aria-label="LinkedIn" data-cursor="link">
+					<svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0Z"/></svg>
+				</a>
+				<a href="https://www.youtube.com/channel/UCd4cGajNSF9gu_LUiXeT7wA" target="_blank" rel="noopener" aria-label="YouTube" data-cursor="link">
+					<svg viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.3 31.3 0 0 0 0 12a31.3 31.3 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.3 31.3 0 0 0 24 12a31.3 31.3 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.2 3.6-6.2 3.6Z"/></svg>
+				</a>
+				<a href="https://angel.co/cbolorinos" target="_blank" rel="noopener" aria-label="AngelList" data-cursor="link">
+					<svg viewBox="0 0 24 24"><path d="M15.6 8.5c.3-1 .8-2.9 1.7-2.9.6 0 .9.5.9 1.2 0 1.4-1.3 4-2.6 6.9l-1.9-.4c.9-1.9 1.6-3.7 1.9-4.8Zm-6.9-.1c-.9-2.6-1.4-4-2.3-4-.6 0-1 .5-1 1.2 0 1 .9 3.2 1.8 5.5l1.5.4c-.4-1.2-.7-2.2 0-3.5Zm11 5.7c-.7 0-1.4.2-1.9.5.6-1.4 1.2-2.8 1.2-4.2 0-1.8-1.1-2.9-2.5-2.9-1.5 0-2.4 1.2-3 2.8-.6-1.7-1-3-1-4.4C12.5 2.9 11.7 2 10.5 2 9.4 2 8.7 2.8 8.7 4c-.6-1.3-1.2-2.2-2.4-2.2C4.9 1.8 4 2.9 4 4.4c0 1.5.7 3.6 1.6 5.9-.7-.2-1.3-.3-1.9-.3C1.6 10 0 11.1 0 13c0 2.3 1.8 4.9 4.6 6.6C7 21.2 9.6 22 12 22c5.2 0 9.3-3.4 9.3-6.6 0-.9-.5-1.4-1.6-1.3Z"/></svg>
+				</a>
+			</div>
+		</div>
+		<a class="hero__scroll" href="#about" aria-label="Scroll down"><span class="mouse"><span class="wheel"></span></span></a>
+	</section>
+
+	<!-- About -->
+	<section class="section about" id="about">
+		<div class="container">
+			<h2 class="section-title reveal">About Me</h2>
+			<div class="about__grid">
+				<div class="about__text">
+					<div class="about__block">
+						<h3>Bio</h3>
+						<p id="aboutBio">I grew up between Madrid and California, and I&rsquo;ve spent the last 9 years working in product design, UX research, and emerging technology.</p>
+					</div>
+					<div class="about__block">
+						<h3>What I Do</h3>
+						<p id="aboutWhatIDo">My work is built on three habits. I am data driven: every design decision I make is backed by analytics, A/B tests, or user interviews, and every project gets a KPI. I am human centered: I get as close to the user as I can, whether that means conducting user interviews or immersing myself in the demographics I&rsquo;m designing for. And I work AI-first: I use generative AI and automation (n8n, agentic workflows, Claude) to multiply output without diluting craft.</p>
+						<p id="aboutClose">Trilingual, bicultural, and comfortable anywhere from product design to brand storytelling to front-end code.</p>
+					</div>
+					<div class="about__actions reveal">
+						<a class="btn btn--solid magnetic" href="#contact" data-cursor="link">Message</a>
+						<a class="btn btn--ghost magnetic" href="resume_cbolorinos.pdf" target="_blank" rel="noopener" data-cursor="link">Resume</a>
+					</div>
+				</div>
+				<aside class="about__card reveal">
+					<div class="about__photo"><img src="assets/images/myphoto.jpg" alt="Christian Bolorinos" loading="lazy" /></div>
+					<ul class="about__facts">
+						<li><span>Name</span> Christian Bolorinos</li>
+						<li><span>Nationality</span> USA / EU</li>
+						<li><span>Phone</span> <a href="tel:+34623032297">(+34) 623 032 297</a></li>
+						<li><span>Email</span> <a href="mailto:cbolorinos@gmail.com">cbolorinos@gmail.com</a></li>
+					</ul>
+				</aside>
+			</div>
+		</div>
+	</section>
+
+	<!-- Facts divider -->
+	<section class="divider divider--facts">
+		<div class="container">
+			<h2 class="reveal">And now for the technical stuff&hellip;</h2>
+		</div>
+	</section>
+
+	<!-- Portfolio -->
+	<section class="section works" id="works">
+		<div class="container">
+			<h2 class="section-title reveal">Portfolio</h2>
+			<div class="filter reveal" id="filter">
+				<button class="filter__btn is-active" data-group="all">All</button>
+				<button class="filter__btn" data-group="web">UI/UX</button>
+				<button class="filter__btn" data-group="ai">Artificial Intelligence</button>
+				<button class="filter__btn" data-group="video">Motion Graphics</button>
+				<button class="filter__btn" data-group="ux">Strategy</button>
+			</div>
+			<div class="grid" id="grid">
+
+				<article class="card" data-groups='["all","ai","ux"]' data-modal="summit">
+					<div class="card__media"><img src="assets/images/works/summit_thumb.jpg" alt="Summit App" loading="lazy" /></div>
+					<div class="card__body"><h3>Summit App</h3><span class="card__go">View case study</span></div>
+				</article>
+
+				<article class="card" data-groups='["all","web","ux"]' data-modal="wsa">
+					<div class="card__media"><img src="assets/images/works/wsa_thumb.jpg" alt="WSA Country Pages" loading="lazy" /></div>
+					<div class="card__body"><h3>WSA Country Pages</h3><span class="card__go">View case study</span></div>
+				</article>
+
+				<article class="card" data-groups='["ux","ai","web"]' data-modal="m5mins">
+					<div class="card__media"><img src="assets/images/works/5mins_thumb.jpg" alt="5Mins eLearning App" loading="lazy" /></div>
+					<div class="card__body"><h3>5Mins eLearning App</h3><span class="card__go">View case study</span></div>
+				</article>
+
+				<article class="card" data-groups='["all","web","ai"]' data-modal="nomads">
+					<div class="card__media"><img src="assets/images/works/nomads_thumb.jpg" alt="Nomads Relocation" loading="lazy" /></div>
+					<div class="card__body"><h3>Nomads Relocation</h3><span class="card__go">View case study</span></div>
+				</article>
+
+				<article class="card" data-groups='["all","web"]' data-modal="swissborg">
+					<div class="card__media"><img src="assets/images/works/swissborg_thumb.jpg" alt="SwissBorg Website" loading="lazy" /></div>
+					<div class="card__body"><h3>SwissBorg Website</h3><span class="card__go">View case study</span></div>
+				</article>
+
+				<article class="card" data-groups='["all","ux"]' data-modal="hilti">
+					<div class="card__media"><img src="assets/images/works/hilti_thumb.jpg" alt="Hilti Customer Experience Research" loading="lazy" /></div>
+					<div class="card__body"><h3>Hilti Customer Experience Research</h3><span class="card__go">View case study</span></div>
+				</article>
+
+				<article class="card" data-groups='["ux","web"]' data-modal="riaUI">
+					<div class="card__media"><img src="assets/images/works/riaUI_thumb.jpg" alt="Ria Interface Design" loading="lazy" /></div>
+					<div class="card__body"><h3>Ria Interface Design</h3><span class="card__go">View case study</span></div>
+				</article>
+
+				<article class="card card--conditional is-hidden" data-groups='["all","web","video"]' data-reveal-skill="strategy,creative" data-reveal-sector="fintech" data-reveal-kw="branding" data-modal="ria">
+					<div class="card__media"><video muted loop autoplay playsinline preload="metadata"><source src="assets/images/works/ria_thumb.mp4" type="video/mp4"></video></div>
+					<div class="card__body"><h3>Ria Money Transfer Corporate Communications</h3><span class="card__go">View case study</span></div>
+				</article>
+
+				<article class="card" data-groups='["all","web","ux"]' data-modal="serviceclub">
+					<div class="card__media"><img src="assets/images/works/serviceclubthumb.jpg" alt="Service Club Delivery" loading="lazy" /></div>
+					<div class="card__body"><h3>Service Club Delivery</h3><span class="card__go">View case study</span></div>
+				</article>
+
+				<article class="card card--conditional is-hidden" data-groups='["all","video","ai"]' data-reveal-skill="creative,automation" data-reveal-sector="delivery" data-reveal-kw="surfers" data-reveal-filter="ai" data-modal="serviceclubai">
+					<div class="card__media"><video muted loop autoplay playsinline preload="metadata"><source src="assets/images/works/serviceclub_thumb.mp4" type="video/mp4"></video></div>
+					<div class="card__body"><h3>Service Club Social Media</h3><span class="card__go">View case study</span></div>
+				</article>
+
+				<article class="card card--conditional is-hidden" data-groups='["all","web","ai","ux"]' data-reveal-skill="strategy,automation" data-reveal-sector="wellness" data-reveal-kw="wellness" data-modal="gomde">
+					<div class="card__media"><img src="assets/images/works/gomde_thumb.jpg" alt="Gomde EU Website" loading="lazy" /></div>
+					<div class="card__body"><h3>Gomde EU Website</h3><span class="card__go">View case study</span></div>
+				</article>
+
+				<article class="card" data-groups='["all","video","web"]' data-modal="holiday">
+					<div class="card__media"><video muted loop autoplay playsinline preload="metadata"><source src="assets/images/works/barclay_thumb.mp4" type="video/mp4"></video></div>
+					<div class="card__body"><h3>Barclay Damon Website</h3><span class="card__go">View case study</span></div>
+				</article>
+
+				<article class="card card--conditional is-hidden" data-groups='["all","ai","web"]' data-reveal-skill="design,automation" data-reveal-sector="learning,wellness" data-reveal-kw="kremsegg" data-reveal-filter="ai" data-modal="kremsegg">
+					<div class="card__media"><img src="assets/images/works/kremsegg_thumb.jpg" alt="Kremsegg University" loading="lazy" /></div>
+					<div class="card__body"><h3>Kremsegg University</h3><span class="card__go">View case study</span></div>
+				</article>
+
+				<article class="card card--conditional is-hidden" data-groups='["all","video","web"]' data-reveal-skill="creative" data-reveal-sector="events" data-reveal-kw="branding" data-modal="gcbranding">
+					<div class="card__media"><video muted loop autoplay playsinline preload="metadata"><source src="assets/images/works/branding_thumb.mp4" type="video/mp4"></video></div>
+					<div class="card__body"><h3>WSA Global Congress Branding</h3><span class="card__go">View case study</span></div>
+				</article>
+
+			</div>
+		</div>
+	</section>
+
+	<!-- Resume -->
+	<section class="section resume" id="resume">
+		<div class="container">
+			<h2 class="section-title reveal">Resume</h2>
+
+			<h3 class="resume__subtitle reveal">Experience</h3>
+			<div class="timeline">
+				<div class="tl reveal" data-entry="wsa">
+					<span class="tl__date">2023&ndash;Present</span>
+					<div class="tl__panel">
+						<h4>WSA <small>Digital Product Designer</small></h4>
+						<ul>
+							<li data-bullet="wsa-1" data-bullet-tags="default,strategy,research,events">Owned the strategy and optimization of WSA&rsquo;s digital ecosystem (website, social, newsletters), driving +169% website traffic and significant audience growth across all channels over two years.</li>
+							<li data-bullet="wsa-2" data-bullet-tags="default,design,research,events">Designed and developed localized country pages, simplifying access to rules, profiles, and application flows. Within 3 months of development, 19% of users were visiting these pages.</li>
+							<li data-bullet="wsa-3" data-bullet-tags="default,design,events">Designed wireframes, user flows, and high-fidelity UI for the Summit mobile app from early discovery through component handoff to developers.</li>
+							<li data-bullet="wsa-4" data-bullet-tags="strategy,creative,events">Introduced personalized regional newsletters through segmentation of a 20K-subscriber newsletter audience, boosting open rates by 38%.</li>
+							<li data-bullet="wsa-5" data-bullet-tags="default,strategy,research">Conducted user interviews and discovery cycles that informed app and website updates.</li>
+							<li data-bullet="wsa-6" data-bullet-tags="automation,learning,events">Created chatbots for WSA events trained on data of the sessions, workshops, locations, speakers, winners, attendees, sponsors and visa info to help attendees navigate the event.</li>
+						</ul>
+					</div>
+				</div>
+				<div class="tl reveal" data-entry="fivemins">
+					<span class="tl__date">2022&ndash;2023</span>
+					<div class="tl__panel">
+						<h4>5Mins <small>Product Designer</small></h4>
+						<ul>
+							<li data-bullet="fivemins-1" data-bullet-tags="default,design,research,learning">Designed gamification systems and social interaction features (user flows, interaction patterns and UI components) for a learning platform that increased 7-day retention by 18%.</li>
+							<li data-bullet="fivemins-2" data-bullet-tags="default,design,creative">Built a comprehensive design system and new brand guidelines, overseeing implementation across content, design and engineering teams.</li>
+						</ul>
+					</div>
+				</div>
+				<div class="tl reveal" data-entry="swissborg">
+					<span class="tl__date">2022</span>
+					<div class="tl__panel">
+						<h4>SwissBorg <small>Growth Product Designer</small></h4>
+						<ul>
+							<li data-bullet="swissborg-1" data-bullet-tags="default,design,strategy,research,fintech">Designed and ran 15+ A/B experiments on the SwissBorg website, iterating on UI components, interaction patterns and conversion flows based on data insights.</li>
+							<li data-bullet="swissborg-2" data-bullet-tags="strategy,creative,fintech">Designed and ran experiments via social campaigns to identify high-converting services, contributing to 25% lower acquisition costs for prioritized offerings.</li>
+							<li data-bullet="swissborg-3" data-bullet-tags="design,fintech,wellness">Created an ESG monitoring interface for cryptocurrencies, helping users make investments that were better aligned with their values.</li>
+						</ul>
+					</div>
+				</div>
+				<div class="tl reveal" data-entry="ria">
+					<span class="tl__date">2020&ndash;2022</span>
+					<div class="tl__panel">
+						<h4>Ria Money Transfer <small>UI &amp; Digital Designer</small></h4>
+						<ul>
+							<li data-bullet="ria-1" data-bullet-tags="default,creative,fintech">Designed Ria&rsquo;s storytelling through social media campaigns, including financial literacy campaign that grew Ria&rsquo;s following by 200%+ (IG) and 70%+ (LI) in under a year.</li>
+							<li data-bullet="ria-2" data-bullet-tags="strategy,creative,fintech">Collaborated with HR and Product Marketing to craft a new employer brand identity positioning Ria as a FinTech leader; defined KPIs monitored through LinkedIn interaction data.</li>
+							<li data-bullet="ria-3" data-bullet-tags="default,design,fintech">Designed product illustrations and micro-animations for Ria&rsquo;s mobile app to guide users through key flows and improve interface comprehension.</li>
+							<li data-bullet="ria-4" data-bullet-tags="creative,fintech">Unified brand guidelines and created a DAM system used across developer, designer, comms, marketing, and brick-and-mortar teams.</li>
+						</ul>
+					</div>
+				</div>
+				<div class="tl reveal" data-entry="serviceclub">
+					<span class="tl__date">2020</span>
+					<div class="tl__panel">
+						<h4>Service Club <small>Creative Director</small></h4>
+						<ul>
+							<li data-bullet="serviceclub-1" data-bullet-tags="default,strategy,research">Conducted UX research on couriers, identifying a key pain point (processing paperwork) that transformed Service Club value proposition, and demographic trends that reshaped targeting.</li>
+							<li data-bullet="serviceclub-2" data-bullet-tags="creative">Supervised social media campaigns designed to get couriers into the system, increasing Instagram following by 400% and LinkedIn by 75%, and growing the number of couriers in the system by 600%.</li>
+							<li data-bullet="serviceclub-3" data-bullet-tags="strategy,learning">Created courses on Service Club Academy that helped navigate Spanish work visas, helping turn the couriers&rsquo; biggest blocker into the product&rsquo;s main acquisition channel.</li>
+						</ul>
+					</div>
+				</div>
+				<div class="tl reveal" data-entry="saturno">
+					<span class="tl__date">2016&ndash;2019</span>
+					<div class="tl__panel">
+						<h4>Saturno Design <small>Product Designer</small></h4>
+						<ul>
+							<li data-bullet="saturno-1" data-bullet-tags="creative">Established and oversaw implementation of new Saturno brand guidelines.</li>
+							<li data-bullet="saturno-2" data-bullet-tags="default,design,creative">Created 13 design packages including website, email, and proposal document templates establishing visual hierarchy, information architecture, and component standards for each. Clients included K&amp;L Gates, Barclay Damon, and FordHarrison.</li>
+							<li data-bullet="saturno-3" data-bullet-tags="default,design">Created the interface for the Century 21 Web App, including interactive components like the mortgage calculator and real estate agent cards.</li>
+							<li data-bullet="saturno-4" data-bullet-tags="creative">Introduced video hero banners and promo videos into Saturno&rsquo;s design package.</li>
+							<li data-bullet="saturno-5" data-bullet-tags="creative">Created a marketing campaign for LensBaby, reframing their products as videography tools to enter a new and growing market.</li>
+						</ul>
+					</div>
+				</div>
+				<div class="tl reveal" data-entry="ventures">
+					<span class="tl__date">2013&ndash;Present</span>
+					<div class="tl__panel">
+						<h4>Product Strategy, Entrepreneurship &amp; Venture Leadership</h4>
+						<ul>
+							<li data-bullet="ventures-1" data-bullet-tags="default,strategy,automation">Co-founded NomadsRelocation, automating visa workflows for digital nomads relocating to Spain.</li>
+							<li data-bullet="ventures-2" data-bullet-tags="default,strategy,research,events">Co-founded Summit, an event and community app built for WSA with no in-house dev budget, since spun out as an independent product now serving clients unrelated to WSA. 60% attendee adoption, 15% retained post-event.</li>
+							<li data-bullet="ventures-3" data-bullet-tags="strategy,creative">Co-founded Yaupon Rose, building website and brand, growing Instagram from 0 to 1,200 followers and scaling the team from 3 to 15.</li>
+							<li data-bullet="ventures-4" data-bullet-tags="default,design,learning,wellness">Designed and developed websites and brand identities for: colectivo.ie, gomde.eu, kremsegg-university.at (university website that includes an AI chatbot that allows the website to edit itself if prompted), memoria-colonial.org (University of Bristol education project), and mind-distillery.com.</li>
+							<li data-bullet="ventures-5" data-bullet-tags="strategy,creative">Conducted UX research for Hilti, analysing 4,000+ customer emails, 200 surveys and 20 in-depth interviews to trace churn among lower-income customers to cost-structure confusion rather than product quality; proposed a rent-vs-buy value calculator to address it.</li>
+							<li data-bullet="ventures-6" data-bullet-tags="design,strategy,automation,learning">Created an educational quiz chatbot for IE Business School&rsquo;s Macroeconomics course.</li>
+							<li data-bullet="ventures-7" data-bullet-tags="creative,learning">Assisted in the creation of Econ Policy 101, an educational game marketed as bonus material for an Economics course on Coursera.</li>
+							<li data-bullet="ventures-8" data-bullet-tags="creative,automation">Created a generative AI social media campaign of &ldquo;super couriers&rdquo; doing stunts on surfboards, snowboards, horses, etc. for Service Club. Videos achieved 150% higher clickthrough rate than Service Club&rsquo;s average of that year.</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<h3 class="resume__subtitle reveal">Education</h3>
+			<div class="timeline">
+				<div class="tl reveal">
+					<span class="tl__date">2019&ndash;2020</span>
+					<div class="tl__panel">
+						<h4>IE Business School <small>Master in Customer Experience &amp; Innovation</small></h4>
+					</div>
+				</div>
+				<div class="tl reveal">
+					<span class="tl__date">2008&ndash;2012</span>
+					<div class="tl__panel">
+						<h4>New York Institute of Technology <small>Bachelor of Arts in Graphic Design</small></h4>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Skills -->
+	<section class="section skills" id="skills">
+		<div class="container">
+			<h2 class="section-title reveal">Skills</h2>
+			<div class="skills__grid">
+				<div class="skills__col reveal">
+					<div class="skills__item"><h4>Design &amp; Craft</h4><p>Figma, Adobe CS, Design systems, Prototyping, Micro-animations, Motion Graphics, Visual design</p></div>
+					<div class="skills__item"><h4>Research &amp; Insights</h4><p>User interviews, Usability testing, Synthesis, Analytics (GA4, Mixpanel)</p></div>
+					<div class="skills__item"><h4>Product &amp; Growth</h4><p>A/B testing, Funnel optimisation, Experimentation frameworks, Information architecture</p></div>
+				</div>
+				<div class="skills__col reveal">
+					<div class="skills__item"><h4>Web Development</h4><p>HTML, CSS, JavaScript, PHP, WordPress, GitHub</p></div>
+					<div class="skills__item"><h4>AI &amp; Automation</h4><p>Generative AI, GPT APIs, Claude, Agentic workflows, n8n</p></div>
+					<div class="skills__item"><h4>Languages</h4><p>English (fluent), Spanish (fluent), Portuguese (B1)</p></div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Hire CTA -->
+	<section class="divider divider--hire">
+		<div class="container">
+			<h2 class="reveal">I&rsquo;d love to chat</h2>
+			<a class="btn btn--solid magnetic reveal" href="#contact" data-cursor="link">Get in Touch</a>
+		</div>
+	</section>
+
+	<!-- Contact -->
+	<section class="section contact" id="contact">
+		<div class="container">
+			<h2 class="section-title reveal">Get in touch</h2>
+			<div class="contact__cards">
+				<a class="contact__card reveal magnetic" href="mailto:cbolorinos@gmail.com" data-cursor="link">
+					<span class="contact__label">Email</span>
+					<span class="contact__value">cbolorinos@gmail.com</span>
+				</a>
+				<a class="contact__card reveal magnetic" href="tel:+34623032297" data-cursor="link">
+					<span class="contact__label">Phone</span>
+					<span class="contact__value">(+34) 623 032 297</span>
+				</a>
+			</div>
+		</div>
+	</section>
+
+	<footer class="footer">
+		<div class="container">
+			<p>&copy; Cbolorinos 2026. All rights reserved.</p>
+		</div>
+	</footer>
+
+	<!-- Modals -->
+	<div class="modal-root" id="modalRoot" aria-hidden="true">
+		<div class="modal-overlay" id="modalOverlay"></div>
+		<!-- Summit -->
+		<div class="modal" data-modal-id="summit">
+			<button class="modal__close" aria-label="Close">&times;</button>
+			<div class="modal__scroll">
+				<div class="modal__head"><h3>Summit App</h3></div>
+				<div class="modal__body">
+					<div class="cs-meta"><h5>Client: <a href="https://wsa-global.org/" target="_blank" rel="noopener">WSA</a> &rarr; independent product</h5><p class="cs-role">Role: Product Lead / Co-Founder</p></div>
+					<div class="cs-chips"><span class="cs-chip">60% attendee adoption</span><span class="cs-chip">15% kept using it post-event</span><span class="cs-chip">Built with no in-house dev budget</span></div>
+					<p class="cs-tldr"><strong>Post-event interviews kept surfacing the same three pains: unnavigable PDF calendars, inefficient networking, and a community that fragmented after every event. The Summit App fixed all three. Over 60% of attendees used it, and 15% kept using it after the event ended.</strong></p>
+					<a href="https://apps.apple.com/us/app/summit-keep-the-fire-burning/id6759138130" target="_blank" rel="noopener"><img loading="lazy" src="assets/images/works/summit.jpg" alt="Summit App" /></a>
+					<span class="cs-label">Context</span>
+					<p>WSA is a UN-backed organization that gives awards to projects supporting the UN Sustainable Development Goals. Several times a year, they host regional and global events to celebrate award winners and provide valuable networking opportunities for attendees. I was in charge of the WSA website (there is another case study about that). To make the website more helpful, I often followed up with 5&ndash;10 people I had met at each event. I asked them what they were hoping to get out of the event and what could be improved.</p>
+					<span class="cs-label">Problem</span>
+					<p>In these interviews several recurring themes came up over and over again. One was that the calendar (a PDF sent through a WhatsApp group) was hard to navigate. Another was the inefficiency of the networking. A person working in agritech in Japan had very little to say to someone working in fintech in Chile. Also, the jumble of emails and LinkedIn connections attendees ended up with was often difficult to sort through and follow up on. The WSA community would come together for these events, but would mostly fragment again immediately afterwards.</p>
+					<span class="cs-label">What I did</span>
+					<p>My first impulse was to address these issues through the website. I built several MVPs, including an AI agent that had access to attendee and project data and suggested connections aligned with each user&rsquo;s goals. These solutions received mostly positive feedback but were clunky and often drowned out by other communication channels. I also evaluated several SaaS solutions. While many solved the calendar problem, none effectively improved networking or helped maintain community engagement after the event. I considered building a custom app, but WSA did not have an in-house mobile developer or the budget to hire one.</p>
+					<p>It was around this time that I met Emeka through the WSA community. He had identified a similar need to keep the community connected between events and was willing to work for equity. After discussions with key stakeholders, Emeka and I began developing a solution together.</p>
+					<img loading="lazy" src="assets/images/works/summit3.jpg" alt="Summit App screens" />
+					<h3 class="cs-h3"><a href="https://apps.apple.com/us/app/summit-keep-the-fire-burning/id6759138130" target="_blank" rel="noopener">The Summit App</a></h3>
+					<p>Explore it on the <a href="https://summitcommunity.app/" target="_blank" rel="noopener">Summit website</a> or download it on the <a href="https://apps.apple.com/us/app/summit-keep-the-fire-burning/id6759138130" target="_blank" rel="noopener">App Store</a>.</p>
+					<p>The first iteration of the app focused solely on calendar functionality. It provided a clear schedule of all sessions, allowed users to sync events with their personal calendars (iCal, Outlook, or Google), view session locations via Google Maps or Apple Maps, and access speaker profiles and LinkedIn pages. The app was embedded within the website so that users who preferred not to download an app could still access the schedule. This successfully solved the calendar problem but did not yet address networking. However, it helped onboard users, which made later iterations easier to roll out.</p>
+					<img loading="lazy" src="assets/images/works/summit2.jpg" alt="Summit App feed" />
+					<p>The second iteration retained the calendar and introduced two new sections: Projects and Community Feed. The Projects section displayed profiles of all winning teams, their objectives, and their social links, allowing attendees to follow up after the event. The Community Feed functioned as a forum where participants could post what they were looking for (investors, employees, or partnerships) and discover others with similar goals. The app also allowed users to browse attendee profiles and identify who might be most relevant to connect with.</p>
+					<p>The app also featured an AI agent in the bottom right corner that could provide information about winners, the agenda, and attendees. This agent supported networking during the event by suggesting people to connect with based on each user&rsquo;s expertise and objectives. It also helped attendees use their time more efficiently by recommending the most relevant sessions.</p>
+					<span class="cs-label">Results</span>
+					<div class="cs-callout"><div class="cs-num">60%<small>attendee adoption</small></div><p>After two events the data was clear: over 60% of attendees engaged with the app, and about 15% of those kept using it afterwards, implying real follow-ups.</p></div>
+					<p>Summit has since spun out of WSA and now operates as an independent product, serving clients with no connection to the organisation it was originally built for &mdash; among them Gomde and Quinta del Sordo.</p>
+					<div class="cs-cta"><p>Want to talk through this project?</p><a class="btn btn--solid" href="#contact" data-close>Get in touch</a></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- WSA -->
+		<div class="modal" data-modal-id="wsa">
+			<button class="modal__close" aria-label="Close">&times;</button>
+			<div class="modal__scroll">
+				<div class="modal__head"><h3>WSA Country Pages</h3></div>
+				<div class="modal__body">
+					<div class="cs-meta"><h5>Client: <a href="https://wsa-global.org/" target="_blank" rel="noopener">WSA</a></h5><p class="cs-role">Role: Web Designer/Developer</p></div>
+					<div class="cs-chips"><span class="cs-chip">19% of all users visited pages within 3 months</span><span class="cs-chip">Standardized application process</span></div>
+					<p class="cs-tldr"><strong>Applicants had to track down their country&rsquo;s local expert just to learn how to apply. I designed and built dynamic country pages that centralized everything in one place. Within three months, 19% of all users were visiting them and application volume rose significantly.</strong></p>
+					<img loading="lazy" src="assets/images/works/wsa-country-pages.jpg" alt="WSA country pages" />
+					<span class="cs-label">Context</span>
+					<p>WSA is a global initiative supporting digital projects aligned with the UN Sustainable Development Goals. Because any UN member state can participate, the organization operates through a distributed network of local coordinators who manage country-specific application processes and community engagement.</p>
+					<span class="cs-label">Problem</span>
+					<p>On the previous website, this created significant friction for applicants. Users had to manually find their country&rsquo;s local expert and contact them to understand the application process, which varied widely between regions. As a result, potential applicants often struggled to understand how to participate or how to engage with their local WSA community.</p>
+					<span class="cs-label">What I did</span>
+					<p>To address this, I designed and developed a system of <a href="https://wsa-global.org/country/spain/" target="_blank" rel="noopener">dynamic country pages</a> that centralized all local information in one place. Each page displayed the country-specific application process, linked directly to the correct submission database, and showcased local winners, youth ambassadors, national experts, and upcoming events. The pages followed a standard treatment to stay consistent and maintainable globally, but were also customizable by the local experts to reflect each country&rsquo;s process. This allowed users to quickly understand how to apply and provided clear entry points into their local WSA network.</p>
+					<span class="cs-label">Results</span>
+					<div class="cs-callout"><div class="cs-num">19%<small>of all site users</small></div><p>Within three months of launch, 19% of users were visiting the country pages. Application volume rose significantly, WSA&rsquo;s local presence strengthened, and users could move from discovery to application in a single flow.</p></div>
+					<span class="cs-label">Beyond the country pages</span>
+					<p>In addition to the country pages, I worked on improving regional engagement through WSA&rsquo;s newsletter. Using location data available in Brevo, I segmented WSA&rsquo;s 20,000-contact mailing list into five geographic regions. This allowed us to promote local events and highlight regionally relevant success stories, which led to improved engagement and higher open rates in subsequent campaigns.</p>
+					<p>My role in these initiatives covered both design and development. I collaborated closely with WSA&rsquo;s community manager to understand the operational differences between countries and ensure that the system accurately reflected local processes while remaining maintainable at a global scale.</p>
+					<p>I also produced an explainer video for WSA, creating motion graphics that helped communicate the organization&rsquo;s mission and participation model more clearly to new audiences.</p>
+					<div class="cs-video"><iframe loading="lazy" src="https://www.youtube.com/embed/nbmtBuqB_74?si=GaRGnG8D2tSjoIf6" title="WSA explainer video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+					<div class="cs-cta"><p>Want to talk through this project?</p><a class="btn btn--solid" href="#contact" data-close>Get in touch</a></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Ria UI -->
+		<div class="modal" data-modal-id="riaUI">
+			<button class="modal__close" aria-label="Close">&times;</button>
+			<div class="modal__scroll">
+				<div class="modal__head"><h3>Ria Interface Design</h3></div>
+				<div class="modal__body">
+					<div class="cs-meta"><h5>Client: <a href="https://www.riamoneytransfer.com/" target="_blank" rel="noopener">Ria Money Transfer</a></h5><p class="cs-role">Role: Product Designer</p></div>
+					<div class="cs-chips"><span class="cs-chip">Simultaneous launch in 5 markets</span><span class="cs-chip">Lottie animations at friction moments</span><span class="cs-chip">Product &harr; support feedback loop</span></div>
+					<p class="cs-tldr"><strong>Ria&rsquo;s mobile app had to launch across five markets at once, in the middle of a pandemic. I was in charge of enforcing the newly defined brand guidelines and doing some custom illustrations and animations. I also organized the feedback sessions between product and customer support that helped inform product direction.</strong></p>
+					<img loading="lazy" src="assets/images/works/riaUI_thumb.jpg" alt="Ria interface design" />
+					<span class="cs-label">Context</span>
+					<p>Before I was involved in the Ria app, I had spent the better part of a year building the internal infrastructure for Ria&rsquo;s visual identity. This included a Digital Asset Management system that gave every team (developers, designers, comms, marketing, and brick-and-mortar operations) a single source of truth for brand assets. It also included an internal intranet and a comprehensive set of brand guidelines built in Frontify, which formalized Ria&rsquo;s evolving visual language across touchpoints for the first time.</p>
+					<span class="cs-label">Problem</span>
+					<p>That groundwork is what got me looped into the app. Ria was preparing to launch its mobile app across multiple markets simultaneously, and the design team needed someone who understood the brand deeply enough to ensure the app&rsquo;s visual language felt continuous with everything else Ria was putting into the world. The design challenge was one of translation. The warmth and cultural specificity of Ria&rsquo;s social media presence, the visual codes of the physical locations, the illustration style we&rsquo;d developed for marketing; all of it needed to find its equivalent in a mobile interface, which operates under very different constraints.</p>
+					<span class="cs-label">What I did</span>
+					<p>My contribution had a few distinct threads. I worked directly with the product team to introduce the illustration assets I had developed into the app, reformatting them for mobile dimensions and animating a selection in Lottie to guide users through key flows and improve comprehension at moments of friction. I also ran sessions showing the product team how to use the intranet and brand guidelines correctly.</p>
+					<span class="cs-label">Beyond the brief</span>
+					<p>The other thing I did wasn&rsquo;t in my job description at all. Ria&rsquo;s product team was based in Colorado. Customer support was in Madrid, which was where I worked. The two departments had almost no structured communication, and as a result product decisions were being made without a clear line of sight into the issues customers were actually experiencing. Having studied UX, I knew what that gap cost in terms of wasted iteration cycles and avoidable friction. So I organized the first monthly cross-department feedback meetings between the two teams. I ran the first sessions, and handed it off once it was established. The app launched as a critical continuity channel during the early months of the pandemic, when Ria&rsquo;s physical network was severely disrupted, and those feedback loops proved essential to identifying and resolving friction points quickly under pressure.</p>
+					<span class="cs-label">Results</span>
+					<div class="cs-callout"><div class="cs-num">5<small>markets at launch</small></div><p>The app launched across the US, Canada, UK, Spain and Australia, becoming a critical continuity channel while Ria&rsquo;s physical network was disrupted by lockdowns.</p></div>
+					<p>To see the full app you can download it on <a href="https://play.google.com/store/apps/details?id=com.ria.moneytransfer&hl=en&gl=US" target="_blank" rel="noopener">Android</a> or <a href="https://apps.apple.com/us/app/ria-money-transfer/id1065921908" target="_blank" rel="noopener">iOS</a>.</p>
+					<div class="cs-cta"><p>Want to talk through this project?</p><a class="btn btn--solid" href="#contact" data-close>Get in touch</a></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 5Mins -->
+		<div class="modal" data-modal-id="m5mins">
+			<button class="modal__close" aria-label="Close">&times;</button>
+			<div class="modal__scroll">
+				<div class="modal__head"><h3>5mins eLearning App</h3></div>
+				<div class="modal__body">
+					<div class="cs-meta"><h5>Client: <a href="https://www.5mins.ai/" target="_blank" rel="noopener">5Mins</a></h5><p class="cs-role">Role: Product Designer (Engagement &amp; Gamification)</p></div>
+					<div class="cs-chips"><span class="cs-chip">+18% 7-day retention</span><span class="cs-chip">&lt;500 &rarr; 10,000+ monthly users</span><span class="cs-chip">AI-generated assessments</span></div>
+					<img loading="lazy" src="assets/images/works/5mins_thumb.jpg" alt="5Mins app" />
+					<p class="cs-tldr"><strong>As 5Mins scaled from fewer than 500 to over 10,000 monthly users, repeat usage plateaued after onboarding. I was responsible for redesigning the engagement layer of the product, focusing on social interaction and gamification to encourage sustained learning behavior. My work increased 7-day retention by 18% and improved repeat usage across the platform.</strong></p>
+					<span class="cs-label">Problem</span>
+					<p>When I joined, the home page primarily surfaced content automatically based on users&rsquo; skill sets. While this worked at smaller scale, it offered little visibility into team activity or shared learning.</p>
+					<span class="cs-label">What I did: social home experience</span>
+					<p>I redesigned the home experience to introduce a social feed inspired by familiar interaction patterns from TikTok and Instagram. The goal was to leverage interfaces users already understood, reducing the learning curve and allowing them to seamlessly browse, share, and discover learning content in a way that felt natural.</p>
+					<p>This included introducing a Share feature that allowed users to distribute videos within or outside the app, as well as a social feed that surfaced content suggested by coworkers, trending within teams, or assigned by managers. The decision to prioritize social features was also informed by broader platform history. As described by Tim Wu in his analysis of early internet platforms, services like AOL gained dominance not through content, but by embedding social interaction directly into the user experience. Applying this principle to 5Mins, we focused on making learning activity visible and shareable within teams, rather than treating it as an isolated task.</p>
+					<a href="https://www.figma.com/proto/Ip9yECNVDyQvegLyfAJfhl/5Mins?type=design&node-id=1-4721&t=Qwn9po1N0aGM6z3v-1&scaling=scale-down&page-id=0%3A1&starting-point-node-id=1%3A4721&mode=design" target="_blank" rel="noopener"><img loading="lazy" src="assets/images/works/5mins_figma2.jpg" alt="5Mins social feed prototype" /></a>
+					<span class="cs-label">What I did: gamification system</span>
+					<p>The platform initially included basic streaks and daily goals, which proved insufficient for long-term motivation. I designed a structured learning path supported by badges and certificates, drawing inspiration from Duolingo&rsquo;s progression and reward systems.</p>
+					<p>Users unlocked badges by earning skill points through watching relevant videos. After unlocking three badges, they became eligible to earn certificates. Upon completing the required lessons, users were prompted to take an assessment. Since every user watched different videos, there was no way to automatically generate quizzes, as each learning path was unique. To solve this, we included an AI agent powered by ChatGPT. It analyzed their recent lessons and generated quiz questions. Users scoring above 80% received a shareable certificate, meaning they could demonstrate tangible proof of their learnings on LinkedIn.</p>
+					<a href="https://www.figma.com/proto/Ip9yECNVDyQvegLyfAJfhl/5Mins?type=design&node-id=19-27955&t=bbT88dK6OQSvwC8k-1&scaling=scale-down&page-id=16%3A1879&starting-point-node-id=19%3A27955&show-proto-sidebar=1&mode=design" target="_blank" rel="noopener"><img loading="lazy" src="assets/images/works/5mins_figma.jpg" alt="5Mins gamification prototype" /></a>
+					<span class="cs-label">Results</span>
+					<div class="cs-callout"><div class="cs-num">+18%<small>7-day retention</small></div><p>The redesigned engagement layer lifted 7-day retention by 18% and improved repeat usage across the platform as 5Mins scaled past 10,000 monthly users.</p></div>
+					<div class="cs-cta"><p>Want to talk through this project?</p><a class="btn btn--solid" href="#contact" data-close>Get in touch</a></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- SwissBorg -->
+		<div class="modal" data-modal-id="swissborg">
+			<button class="modal__close" aria-label="Close">&times;</button>
+			<div class="modal__scroll">
+				<div class="modal__head"><h3>SwissBorg Website</h3></div>
+				<div class="modal__body">
+					<div class="cs-meta"><h5>Client: <a href="https://swissborg.com/" target="_blank" rel="noopener">SwissBorg</a></h5><p class="cs-role">Role: Growth Product Designer</p></div>
+					<div class="cs-chips"><span class="cs-chip">2x website conversion rate</span><span class="cs-chip">+20% downloads from one A/B test</span><span class="cs-chip">-25% social acquisition costs</span></div>
+					<p class="cs-tldr"><strong>At SwissBorg, I led initiatives to optimize the marketing website, improve app downloads, and validate new product offerings through UX research and experimentation.</strong></p>
+					<span class="cs-label">What I did</span>
+					<p>The website&rsquo;s main goal was to drive app downloads. I designed and executed conversion optimization initiatives. One of these was running continuous A/B tests, and prioritizing high-performing components. One clear example was the QR code on the home screen: originally visible only on hover, displaying it by default led to an increase in the conversion rate by about 20%.</p>
+					<a href="https://www.figma.com/proto/MbjOJ55CXnmGABGSz9ilwr/SwissBorg?kind=&node-id=2%3A124354&page-id=2%3A123885&scaling=scale-down&show-proto-sidebar=1&starting-point-node-id=2%3A124354" target="_blank" rel="noopener"><img loading="lazy" src="assets/images/works/swissborg_1.jpg" alt="SwissBorg website prototype" /></a>
+					<p>Beyond the website itself, I wanted to know which of SwissBorg&rsquo;s services converted best, so I asked. Nobody had an answer. So I designed a social media campaign where each ad featured a different service while every other variable was held constant: video length, time of day, the template used to make the videos, and so on. The results informed prioritization of offerings and contributed to a 25% reduction in social media marketing costs for the same results. It also showed us which services needed to be featured more prominently on the website.</p>
+					<p>I also optimized the premium upsell experience on the website. Using interactive yield comparison graphs, we highlighted subscription plan differences and token-based rewards (CHSB) while maintaining clarity for users of varying expertise. Hotjar data helped identify which interactive components drove conversions, and an accordion pattern allowed users to access complex information without cluttering the main experience.</p>
+					<a href="https://www.figma.com/proto/MbjOJ55CXnmGABGSz9ilwr/SwissBorg?kind=&node-id=2%3A124664&page-id=2%3A124663&scaling=scale-down&show-proto-sidebar=1&starting-point-node-id=2%3A124664" target="_blank" rel="noopener"><img loading="lazy" src="assets/images/works/swissborg_2.jpg" alt="SwissBorg premium upsell" /></a>
+					<span class="cs-label">Results</span>
+					<div class="cs-callout"><div class="cs-num">2x<small>conversion rate</small></div><p>Continuous A/B testing and experimentation doubled the website&rsquo;s conversion rate during my time at SwissBorg, while social campaign experiments cut acquisition costs by 25% for prioritized offerings.</p></div>
+					<div class="cs-cta"><p>Want to talk through this project?</p><a class="btn btn--solid" href="#contact" data-close>Get in touch</a></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Barclay Damon (holiday) -->
+		<div class="modal" data-modal-id="holiday">
+			<button class="modal__close" aria-label="Close">&times;</button>
+			<div class="modal__scroll">
+				<div class="modal__head"><h3>Barclay Damon Website</h3></div>
+				<div class="modal__body">
+					<div class="cs-meta"><h5>Client: <a href="https://www.barclaydamon.com/" target="_blank" rel="noopener">Barclay Damon</a></h5><p class="cs-role">Role: Web Designer</p></div>
+					<div class="cs-chips"><span class="cs-chip">9 offices &middot; 65 practice areas</span><span class="cs-chip">Hundreds of attorneys</span><span class="cs-chip">Still live ~10 years later</span></div>
+					<p class="cs-tldr"><strong>This project focused on redesigning the website for <a href="https://www.barclaydamon.com/" target="_blank" rel="noopener">Barclay Damon</a>, an international law firm with 9 offices, 65 practice areas, and hundreds of attorneys. The core challenge was not visual refresh, but scale: creating a system that could accommodate a large, complex organization without fragmenting the brand or overwhelming users.</strong></p>
+					<img loading="lazy" src="assets/images/works/portfolio-5.gif" alt="Barclay Damon website" />
+					<span class="cs-label">What I did</span>
+					<p>Early in the process, I explored multiple strategic directions for how the firm could present itself digitally. One concept emphasized Barclay Damon&rsquo;s Renewable Energy practice, while another used a more abstract, flexible visual system capable of representing a wide range of legal domains. These explorations were used to align internal stakeholders around what the website needed to do for the business.</p>
+					<img loading="lazy" src="assets/images/works/concept2.jpg" alt="Barclay Damon concept" />
+					<p>The final direction prioritized adaptability and longevity over expressiveness. The website was designed as a modular system, allowing hundreds of pages to be created, maintained, and evolved without design conflicts. Motion and visual differentiation were used selectively to avoid compromising clarity or performance.</p>
+					<a href="https://www.barclaydamon.com/" target="_blank" rel="noopener"><video width="100%" loop muted autoplay playsinline preload="metadata"><source src="assets/images/works/barclay.mp4" type="video/mp4"></video></a>
+					<span class="cs-label">Results</span>
+					<div class="cs-callout"><div class="cs-num">10 yrs<small>and still live</small></div><p>The site was built almost 10 years ago, is still live, and still doesn&rsquo;t look dated &mdash; the modular system has absorbed a decade of new pages without fragmenting.</p></div>
+					<p>While my role included hands-on design, the strategic value of the project lay in translating organizational complexity into a coherent digital structure that balanced marketing needs, editorial autonomy, and long-term maintainability within a custom CMS environment. It remains one of my favorite examples of my early work!</p>
+					<div class="cs-cta"><p>Want to talk through this project?</p><a class="btn btn--solid" href="#contact" data-close>Get in touch</a></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Ria Comms -->
+		<div class="modal" data-modal-id="ria">
+			<button class="modal__close" aria-label="Close">&times;</button>
+			<div class="modal__scroll">
+				<div class="modal__head"><h3>Ria Money Transfer Corporate Communications</h3></div>
+				<div class="modal__body">
+					<div class="cs-meta"><h5>Client: <a href="https://www.riamoneytransfer.com/" target="_blank" rel="noopener">Ria Money Transfer</a></h5><p class="cs-role">Role: Digital Designer/Brand Strategist</p></div>
+					<div class="cs-chips"><span class="cs-chip">+200% Instagram</span><span class="cs-chip">+70% LinkedIn</span><span class="cs-chip">Most-followed brand in its competitive set</span></div>
+					<p class="cs-tldr"><b>Walk past a Ria location in most European or American cities and you&rsquo;ll find it wedged between a shop selling burner phones and a stall flogging counterfeit sneakers. That association (low-rent, cash-in-hand, the last resort of the unbanked) was Ria&rsquo;s brand problem in a nutshell.</b><br>Meanwhile, a new generation of fintech darlings (Wise, Revolut, Remitly) were building glossy digital identities and becoming household names in tech circles, despite serving a fraction of the markets Ria quietly dominated.</p>
+					<img loading="lazy" src="assets/images/works/Riacomms1.jpg" alt="Ria corporate communications" />
+					<span class="cs-label">Problem</span>
+					<p>The truth was quite the opposite. Ria was one of the largest money transfer operators in the world, moving billions of dollars a year to countries and corridors that Wise had never even considered. It was a lifeline for migrant families, a financial artery for communities in parts of Africa, Latin America, and Southeast Asia where most people had never heard of Revolut. My department&rsquo;s mandate wasn&rsquo;t marketing in the conventional sense. It was to change how the world saw Ria, starting with prospective talent and potential partners, and to make visible a story the company had never bothered to tell.</p>
+					<div class="cs-video"><iframe loading="lazy" src="https://www.youtube.com/embed/NdkYZmljciA" title="Ria Orange Envelope" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+					<span class="cs-label">What I did</span>
+					<p>The strategic anchor was repositioning Ria as the fintech that served the bottom billion. This meant moving away from transactional messaging and toward storytelling that foregrounded the human and economic weight of what Ria actually did. One of the most effective executions of this was the Orange Envelope. This video followed the emotional journey of a remittance payment from a worker abroad to their family at home. It showed what the money meant to the recipients and how it could change their lives. On the other end of the spectrum, our Microfinance video educated audiences on a corner of financial systems that mainstream fintech commentary almost entirely ignores, and one where Ria had more operational depth and nuance than any of its better-known competitors.</p>
+					<div class="cs-video"><iframe loading="lazy" src="https://www.youtube.com/embed/oaKU18nEpno" title="Ria Microfinance" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+					<p>Content was distributed across Instagram, LinkedIn, and YouTube, with topic selection driven by keyword research: we targeted concepts that were frequently searched but underrepresented in quality content. Measuring success, however, required more precision than follower counts or likes. We defined specific KPIs around LinkedIn engagement from decision-makers and senior roles at top fintech companies to track whether the people we actually wanted to reach were interacting with our content. This distinction mattered because any post mentioning Atl&eacute;tico de Madrid, for instance, would generate enormous engagement from football fans. Unfortunately, these posts almost never got engagement from the audience we were trying to influence. Filtering for role-based engagement gave us a much cleaner signal about what was resonating with fintech leaders specifically, and let us iterate content strategy based on data that was actually meaningful to our objectives.</p>
+					<span class="cs-label">Results</span>
+					<div class="cs-callout"><div class="cs-num">+200%<small>Instagram following</small></div><p>LinkedIn grew by 70%, making Ria the most followed brand on LinkedIn among all its direct competitors.</p></div>
+					<p>My role spanned research, scriptwriting, animation, and production, but what I&rsquo;m most proud of is the strategic coherence of the work. Through videos on immigration, finance and the impact of remittances we were able to reposition Ria as an important player in the fintech ecosystem.</p>
+					<div class="cs-cta"><p>Want to talk through this project?</p><a class="btn btn--solid" href="#contact" data-close>Get in touch</a></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Service Club Delivery -->
+		<div class="modal" data-modal-id="serviceclub">
+			<button class="modal__close" aria-label="Close">&times;</button>
+			<div class="modal__scroll">
+				<div class="modal__head"><h3>Service Club Delivery</h3></div>
+				<div class="modal__body">
+					<div class="cs-meta"><h5>Client: <a href="https://serviceclub.com/" target="_blank" rel="noopener">Service Club</a></h5><p class="cs-role">Role: Creative Director</p></div>
+					<div class="cs-chips"><span class="cs-chip">2,000 &rarr; 14,000 couriers in 6 months</span><span class="cs-chip">+400% Instagram &middot; +75% LinkedIn</span><span class="cs-chip">Contracts with 4 major platforms</span></div>
+					<p class="cs-tldr"><strong>Immersive research uncovered that couriers&rsquo; biggest blocker was Spain&rsquo;s freelancer paperwork. Addressing that helped to grow the courier base 7x and won contracts with Glovo, Uber Eats, Stuart and Getir.</strong></p>
+					<img loading="lazy" src="assets/images/works/serviceclub.jpg" alt="Service Club Delivery" />
+					<span class="cs-label">Context</span>
+					<p><strong>I was hired for only a 6 month contract at <a href="https://serviceclub.com/" target="_blank" rel="noopener">Service Club Delivery,</a> and while my formal role was as Creative Director, my informal roles included Web Developer, UX/UI Designer, Social Media Manager, UX Researcher and Motion Graphics Designer.</strong></p>
+					<p>The company was formed to connect couriers to courier companies (Uber Eats, Glovo, Deliveroo, etc), and to reduce their churn rate (which is one of the biggest pain points for these companies). Our services included a job board and an academy where couriers could upskill and earn certificates (think LinkedIn for couriers).</p>
+					<img loading="lazy" src="assets/images/works/serviceclub2.jpg" alt="Service Club branding" />
+					<span class="cs-label">Problem</span>
+					<p>When I joined SCD I also signed up to be a courier for Deliveroo to better understand the ecosystem, riding around Madrid delivering food for about 3 hours a week. I also interviewed countless couriers, both in person and online through surveys, interviews and data analysis. I soon found the massive pain point that they had, and a way we could fix it. <br>The hardest part about working for the delivery apps was the infernal pile of indecipherable documents that one had to complete to be able to register as a freelancer. This was made significantly worse by the fact that most couriers are either students or migrants.</p>
+					<img loading="lazy" src="assets/images/works/serviceclub1.jpg" alt="Service Club campaign" />
+					<span class="cs-label">What I did</span>
+					<p>The first step we made was to add a course in the academy on getting and maintaining a Spanish work visa, as well as several others helping people understand what work opportunities were and weren&rsquo;t available to them. Users had to create a profile on our system to access these courses, which were marketed extensively on online communities that were popular with students and recent migrants. Additionally, we partnered with a company that registered people as freelancers for a small monthly fee (around 12 euros if I remember correctly). This meant that through our interface we were able to offer people a way to fill out this immensely complicated paperwork without lifting a finger.</p>
+					<span class="cs-label">Results</span>
+					<div class="cs-callout"><div class="cs-num">7x<small>courier growth</small></div><p>Couriers in the system rose from 2,000 to 14,000 in the six months I worked there. Instagram grew 400% and LinkedIn 75%, and the rapidly inflating metrics won contracts with 4 major companies: Glovo, Uber Eats, Stuart and Getir.</p></div>
+					<span class="cs-label">What I learned</span>
+					<p>The insight that transformed the business came from outside the product. Riding the bike surfaced what surveys alone never would have.</p>
+					<div class="cs-cta"><p>Want to talk through this project?</p><a class="btn btn--solid" href="#contact" data-close>Get in touch</a></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Nomads -->
+		<div class="modal" data-modal-id="nomads">
+			<button class="modal__close" aria-label="Close">&times;</button>
+			<div class="modal__scroll">
+				<div class="modal__head"><h3>Nomads Relocation</h3></div>
+				<div class="modal__body">
+					<div class="cs-meta"><h5>Client: Freelance</h5><p class="cs-role">Role: AI Automation/Brand Strategist</p></div>
+					<div class="cs-chips"><span class="cs-chip">~5% chatbot conversion</span><span class="cs-chip">Near-zero running costs</span><span class="cs-chip">Automated lead discovery</span></div>
+					<p class="cs-tldr"><strong>A chatbot I built to stop answering friends&rsquo; visa questions became a self-sustaining relocation business. AI handles the education and qualification; humans handle the high-stakes legal work.</strong></p>
+					<a href="https://nomadsrelocation.com/" target="_blank" rel="noopener"><img loading="lazy" src="assets/images/works/nomads1.jpg" alt="Nomads Relocation" /></a>
+					<span class="cs-label">How it started</span>
+					<p><a href="https://nomadsrelocation.com/" target="_blank" rel="noopener">Nomads Relocation</a> started as a WhatsApp message. A few friends were planning to move to Spain and kept asking me the same questions about the Digital Nomad Visa, about tax registration, about what paperwork they needed. I built a simple chatbot to handle those questions so I didn&rsquo;t have to answer them manually every time.</p>
+					<p>The chatbot was more useful than I expected. When a friend who worked as a real estate agent in the US mentioned that many of her clients relocating to Spain were running into the same friction, I embedded the chatbot in a proper website and started paying attention to the conversations people had with it. The pattern was consistent: once someone had figured out their visa eligibility, they generally asked for an immigration lawyer. A small portion asked about housing, banking and insurance as well. Each service we added came directly from questions the chatbot was already fielding.</p>
+					<a href="https://nomadsrelocation.com/" target="_blank" rel="noopener"><img loading="lazy" src="assets/images/works/nomads2.jpg" alt="Nomads Relocation site" /></a>
+					<span class="cs-label">How it works</span>
+					<p>The customer journey now works like this. Most users find us organically, but we also go looking for them. Automated workflows monitor Reddit and Facebook for people mentioning a move to Spain, asking about the Digital Nomad Visa, or expressing frustration with the paperwork process. An AI agent assesses each post for relevance and drafts a response; I review and post it manually, since both platforms penalize automated behavior heavily. The post leads them to the website where they can interact with the chatbot. The chatbot converts at around 5%, and it costs almost nothing to run, and the conversations it has before people are ready to commit are building trust. By the time someone does convert, they&rsquo;ve already been educated on the process and pre-qualified themselves. The low-touch freemium model also means the business requires very little of my time on a day-to-day basis, which was always the intention.</p>
+					<span class="cs-label">Results</span>
+					<div class="cs-callout"><div class="cs-num">~5%<small>chatbot conversion</small></div><p>The chatbot converts around 5% of conversations at near-zero cost. By the time someone commits, they&rsquo;ve already been educated on the process and pre-qualified themselves.</p></div>
+					<span class="cs-label">What I learned</span>
+					<p>Building Nomads taught me something I&rsquo;ve since applied to other projects: the combination of AI and automation is incredibly powerful and can make processes much more efficient. The business itself only exists because I was already automating conversations. Once I understood what that made possible, I started automating the sales funnel the same way (monitoring Reddit and Facebook for people mentioning a move to Spain). What started as a tool for helping a handful of friends became a small but self-sustaining business built almost entirely on automation.</p>
+					<div class="cs-cta"><p>Want to talk through this project?</p><a class="btn btn--solid" href="#contact" data-close>Get in touch</a></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Hilti -->
+		<div class="modal" data-modal-id="hilti">
+			<button class="modal__close" aria-label="Close">&times;</button>
+			<div class="modal__scroll">
+				<div class="modal__head"><h3>Hilti</h3></div>
+				<div class="modal__body">
+					<div class="cs-meta"><h5>Client: <a href="https://www.hilti.com/" target="_blank" rel="noopener">Hilti</a></h5><p class="cs-role">Role: UX Researcher</p></div>
+					<div class="cs-chips"><span class="cs-chip">4,000+ emails analyzed</span><span class="cs-chip">200 surveys &middot; 20 interviews</span><span class="cs-chip">Churn traced to cost confusion, not quality</span></div>
+					<p class="cs-tldr"><strong>During my Master&rsquo;s in Customer Experience &amp; Innovation at IE, I was part of a small team commissioned by Hilti to investigate the drivers behind a high churn rate among lower-income customers. The problem was framed not as a usability issue, but as a mismatch between Hilti&rsquo;s value proposition and the financial realities of this segment.</strong></p>
+					<span class="cs-label">Research</span>
+					<p>We began with large-scale qualitative research, analyzing over 4,000 customer emails to identify recurring themes. From this dataset, approximately 200 customers completed structured questionnaires, and around 20 participated in in-depth interviews. This allowed us to move from anecdotal feedback to validated behavioral patterns.</p>
+					<span class="cs-label">Findings</span>
+					<p>Our research revealed that churn was not primarily driven by dissatisfaction with product quality, but by poor understanding of long-term cost structures. Many customers were making purchasing decisions without a clear picture of when renting versus buying made financial sense, leading to regret and disengagement.</p>
+					<p>Based on these insights, we mapped the customer ecosystem and end-to-end journey for this segment, identifying key decision points where Hilti could intervene earlier. Rather than proposing major changes to the product line, we recommended targeted adjustments to how value was communicated.</p>
+					<img loading="lazy" src="assets/images/works/hilti1.jpg" alt="Hilti research" />
+					<span class="cs-label">The intervention</span>
+					<p>Our final proposal combined strategic insights with a concrete intervention: a <a href="https://xd.adobe.com/view/c93f6730-f11b-4efc-5b59-476ae2c5fb48-bf0e/screen/f659c9fc-25ad-4420-99f2-6852ddfd5df2/Web-1920-11" target="_blank" rel="noopener">value calculator</a> designed to help customers compare rental and purchase scenarios based on their usage patterns. The goal was to enable more informed decisions upfront.</p>
+					<img loading="lazy" src="assets/images/works/hilti2.jpg" alt="Hilti value calculator" />
+					<div class="cs-cta"><p>Want to talk through this project?</p><a class="btn btn--solid" href="#contact" data-close>Get in touch</a></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Service Club AI -->
+		<div class="modal" data-modal-id="serviceclubai">
+			<button class="modal__close" aria-label="Close">&times;</button>
+			<div class="modal__scroll">
+				<div class="modal__head"><h3>Service Club Social Media</h3></div>
+				<div class="modal__body">
+					<div class="cs-meta"><h5>Client: <a href="https://serviceclub.com/" target="_blank" rel="noopener">Service Club</a></h5><p class="cs-role">Role: Creative Direction</p></div>
+					<div class="cs-chips"><span class="cs-chip">12,000+ views on top reel</span><span class="cs-chip">2.5% CTR vs &lt;1% average</span><span class="cs-chip">Reusable Canva template system</span></div>
+					<p class="cs-tldr"><strong>Several years after working at Service Club, they approached me because their social media campaigns had gotten way too &ldquo;stock-photoey&rdquo;.</strong> The CEO reached out to me because she had always appreciated the eccentric, human touch that I had added to the brand. I was happy to help out. Partly because I always enjoyed the autonomy I had when working for Service Club, and also because I had been looking for an excuse to do a campaign with AI generated video.</p>
+					<div class="cs-video cs-video--vertical"><iframe loading="lazy" src="https://www.youtube.com/embed/UYNlzYViEvE" title="Service Club surfer reel" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+					<span class="cs-label">What I did</span>
+					<p>The objective was simply to get people to sign up to be couriers on their system. My solution was to grab the users attention to get them to stop scrolling, and then to offer them a job. I made some reels, some stories and some posts. One of the best performing ones was this one - a surfer who was carrying a few parcels. The visual was strange enough to catch people&rsquo;s attention, and after just a few seconds they were prompted to sign up with Service Club. The reel got more than 12,000 views (it was boosted, though I don&rsquo;t know how much money they put on it), and a 2.5% click through rate (they usually averaged less than 1%). I suspect this surfer courier&rsquo;s success was due to his extraordinarily good looks!<br>The campaign featured a variety of outrageous AI generated scenarios that made couriers look like the coolest people in the world. They included spider man, superman, surfers, snowboarders, Santa Clause, the Grinch and a few others. There were also some regional campaigns made for when Service Club needed more people in their system for a specific location. The reel below is one that I made for when they were seeking couriers in London.</p>
+					<div class="cs-video cs-video--vertical"><iframe loading="lazy" src="https://www.youtube.com/embed/H93dBCk2VvI" title="Service Club London reel" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+					<span class="cs-label">Results</span>
+					<div class="cs-callout"><div class="cs-num">2.5%<small>click-through rate</small></div><p>The best reel drew 12,000+ views with a 2.5% CTR &mdash; against a channel average of less than 1%.</p></div>
+					<span class="cs-label">The handoff</span>
+					<p>The campaign was successful but Service Club didn&rsquo;t have enough funding for me, and I didn&rsquo;t have enough time for them. As always though, I made sure to accommodate them as much as possible. One way to do this was by making templates. This template on Canva had the skyline and text as a separate layer from the &ldquo;super courier&rdquo;. This meant that they could drop any skyline into the background layer and reuse the template for any city specific campaign they needed.</p>
+					<img loading="lazy" src="assets/images/works/londonneedsyou.jpg" alt="London needs you campaign" />
+					<div class="cs-cta"><p>Want to talk through this project?</p><a class="btn btn--solid" href="#contact" data-close>Get in touch</a></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Gomde -->
+		<div class="modal" data-modal-id="gomde">
+			<button class="modal__close" aria-label="Close">&times;</button>
+			<div class="modal__scroll">
+				<div class="modal__head"><h3>Gomde EU Website</h3></div>
+				<div class="modal__body">
+					<div class="cs-meta"><h5>Client: <a href="https://gomde.eu/" target="_blank" rel="noopener">Rangjung Yeshe Gomde</a></h5><p class="cs-role">Role: Product Lead</p></div>
+					<div class="cs-chips"><span class="cs-chip">Hours of manual coordination automated</span><span class="cs-chip">Bilingual DE/EN platform</span><span class="cs-chip">~800 podcast listeners per episode</span></div>
+					<p class="cs-tldr"><b><a href="https://gomde.eu/" target="_blank" rel="noopener">Rangjung Yeshe Gomde</a> is a Tibetan Buddhist retreat center in the Austrian prealps. They are a long-standing client and one that reflects my commitment to aligning my work with projects that have a genuinely positive impact. I designed and built their website from scratch, but what I ended up delivering was considerably more than a website.</b></p>
+					<img loading="lazy" src="assets/images/works/Gomde.jpg" alt="Gomde website" />
+					<span class="cs-label">The brief</span>
+					<p>The original brief was straightforward: create a clear, bilingual platform for announcing retreats and events, with a booking system that could handle extended stays. Gomde&rsquo;s audience is roughly 75% German-speaking and 25% English-speaking, so the multilingual setup was a core requirement from the start, as was making the site maintainable by non-technical staff.</p>
+					<img loading="lazy" src="assets/images/works/Gomde2.jpg" alt="Gomde booking system" />
+					<span class="cs-label">Problem</span>
+					<p>The automation work grew out of my conversations with the staff, many of whom are close personal friends. While I was setting up the booking functionality, I started asking the staff about how they currently managed registrations. The answer was printed calendars and spreadsheets. Every retreat required manual data entry across multiple systems, and attendance information, dietary requirements, and accommodation preferences had to be tracked and communicated by hand. The more I understood the workflow, the more obvious it became that almost all of it could be automated with n8n.</p>
+					<span class="cs-label">What I built</span>
+					<p>The system I built works like this: when a staff member creates a retreat or event, a registration form is generated automatically, with dates pre-populated from the event but editable by participants. On submission, attendees receive a confirmation email, are added to the event as Google Calendar attendees, and are enrolled in an automated pre-arrival and post-departure communication sequence. Staff can see at a glance (in Google Calendar) how many people are coming, when, what accommodation they&rsquo;ve requested, and any dietary requirements. What previously required hours of manual coordination now takes almost no time. Participants are also synced to Mailchimp with language and interest-based tags, replacing the previous approach of sending everyone the same communication regardless of language or program interest.</p>
+					<span class="cs-label">Beyond the website</span>
+					<p>I also produce <a href="https://open.spotify.com/show/4kusBAlacJbqr2mhl2ZPzv" target="_blank" rel="noopener">Gomde&rsquo;s monthly podcast</a>, which averages around 800 listeners per episode.</p>
+					<div class="cs-cta"><p>Want to talk through this project?</p><a class="btn btn--solid" href="#contact" data-close>Get in touch</a></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- WSA Global Congress Branding (conditional) -->
+		<div class="modal" data-modal-id="gcbranding">
+			<button class="modal__close" aria-label="Close">&times;</button>
+			<div class="modal__scroll">
+				<div class="modal__head"><h3>WSA Global Congress Branding</h3></div>
+				<div class="modal__body">
+					<div class="cs-meta"><h5>Client: <a href="https://wsa-global.org/" target="_blank" rel="noopener">WSA</a></h5><p class="cs-role">Role: Brand &amp; Digital Designer</p></div>
+					<div class="cs-chips"><span class="cs-chip">182 UN Member States</span><span class="cs-chip">Branding &middot; print &middot; motion</span><span class="cs-chip">Vienna 2026 Global Congress</span></div>
+					<video controls preload="metadata" width="100%"><source src="assets/images/works/GCbranding1_1.mp4" type="video/mp4">Your browser does not support the video tag.</video>
+					<p>Event planning was new for me when I first joined WSA. But I loved (and still love) the project. Thousands of impact entrepreneurs from all 182 UN Member States getting together to connect, to learn from each other, and to help bring to fruition the UN Sustainable Development Goals. Imagine having lunch with someone who was designing an <a href="https://wsa-global.org/winner/trollwall-ai/" target="_blank" rel="noopener">AI that blocked hate speech</a>, then coffee with someone who was working on an app that helped people navigate their <a href="https://wsa-global.org/winner/nusuk/" target="_blank" rel="noopener">pilgrimage to Mecca</a>, then getting the cab back to the hotel with a crew that was helping <a href="https://wsa-global.org/winner/cerge/" target="_blank" rel="noopener">disabled people travel Australia</a>. I feel extremely privileged to have been part of this.</p>
+					<img loading="lazy" src="assets/images/works/branding2.jpg" alt="WSA Global Congress branding" />
+					<p>Like most idealistic ventures, funding was tight and the team had to wear many hats. My role included building the digital infrastructure, coding dynamic customisable country pages for each of the 182 UN member states, building an app that helped people navigate the events and provided AI powered networking suggestions and my personal favorite; branding the events.</p>
+					<p>I&rsquo;ve always enjoyed branding. Creating the visual language for a project. I also enjoy travel, and here was a perfect combination. Branding the WSA Global Congress involved weaving the destination city, the themes that would be explored, and sometimes the co-hosts of the event into one coherent tapestry. The one you&rsquo;re looking at here was the branding for the 2026 Global Congress in Vienna, inspired by the landmarks of Vienna and the shores of the Danube (which is the singularly most swimmable river in any European capital by the way). It also weaved in the aggressive geometry of Vienna Up, our cohosts. The brand lent itself well to animation, and our sponsor logos were integrated seamlessly into looping animations of Viennese landscapes that were just entertaining enough to catch the eye, but not too entertaining to distract from the speakers (too many events do this by the way, and it has to stop!). Just the mild eye tickling pleasure of a walk through Prater Park.</p>
+					<img loading="lazy" src="assets/images/works/branding5.jpg" alt="WSA Global Congress stage cubes" />
+					<p>The stage elements included these lovely cubes. Low budget objects that could make a stage feel branded. Arranged in different ways they could show scenes from the Danube, from Prater, from Vienna City hall, or just a bunch of sponsor logos, depending on what the occasion called for.</p>
+					<img loading="lazy" src="assets/images/works/branding3.jpg" alt="WSA Global Congress branded cubes on stage" />
+					<p>My boss at WSA is approximately 400 years old. As a natural consequence of this, he is a big believer in print and insisted we make a booklet with the winners, sponsors and some other background info about the WSA Global Congress. I suspected most of these would end up in a landfill, but in an effort to avoid that I added some exercises so that the booklets could help people take notes on some of the pitches, workshops and panels. I have no data on how many of these booklets ended up in a landfill, but I did see a lot of people filling out the exercises!</p>
+					<img loading="lazy" src="assets/images/works/branding4.jpg" alt="WSA Global Congress printed booklet" />
+					<div class="cs-cta"><p>Want to talk through this project?</p><a class="btn btn--solid" href="#contact" data-close>Get in touch</a></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Kremsegg University -->
+		<div class="modal" data-modal-id="kremsegg">
+			<button class="modal__close" aria-label="Close">&times;</button>
+			<div class="modal__scroll">
+				<div class="modal__head"><h3>Kremsegg University</h3></div>
+				<div class="modal__body">
+					<div class="cs-meta"><h5>Client: Kremsegg University</h5><p class="cs-role">Role: Product Designer &amp; Developer</p></div>
+					<div class="cs-chips"><span class="cs-chip">First Buddhist university in Austria</span><span class="cs-chip">Plain-English site editing</span><span class="cs-chip">AI editor with a GitHub safety net</span></div>
+					<p class="cs-tldr"><strong>An early-stage university needed a simple site that non-technical founders could keep changing as the project evolved. So beyond the website itself, I built a password-protected AI editor that lets the client edit any page in plain English &mdash; preview, commit to GitHub, then publish.</strong></p>
+					<img loading="lazy" src="assets/images/works/kremsegg.jpg" alt="Kremsegg University building" />
+					<span class="cs-label">The context</span>
+					<p>Kremsegg University aims to be the first Buddhist university in Austria. It&rsquo;s still in its infancy: the founders have the building and several million euros in investment, and they need several million more to secure the necessary permits. One of the founders approached me to build their website. The intent was modest &mdash; a calling card. A place for people interested in the project to learn more, and to donate or invest if they felt inclined.</p>
+					<img loading="lazy" src="assets/images/works/kremsegg2.jpg" alt="Kremsegg University website" />
+					<span class="cs-label">The problem</span>
+					<p>I vibe-coded the website. I&rsquo;d been using Claude to write front-end code for a while and found it reliable, so the build itself went quickly: a donate page, a contact page, and everything else a landing page needs. But the project was moving fast. New donors wanted revisions &mdash; wording, photos, small details &mdash; and I found myself making constant updates that each took less than 30 seconds to implement but broke my flow every time. It was inefficient for everyone. Worse, I realised I was essentially just copy-pasting the client&rsquo;s requests into Claude and pushing the result.</p>
+					<span class="cs-label">The solution</span>
+					<p>The solution is the reason this otherwise ordinary website is in my portfolio. To kill the constant-updates problem, I built something so simple, so efficient, and so easy to use that I&rsquo;d be surprised if it doesn&rsquo;t become commonplace in the next few years. It might even replace traditional CMS platforms altogether.</p>
+					<img loading="lazy" src="assets/images/works/kremsegg3.jpg" alt="Kremsegg University AI site editor" />
+					<p>I added a password-protected AI editor to the site. The client selects a page, describes the change they want in plain English, and can even upload images. A Claude API applies the edit to the site&rsquo;s code, shows a preview, and only publishes once the client confirms &mdash; committing to GitHub first, so nothing is lost if a change breaks something. If a request is too large to handle safely, the assistant offers to email me instead of pushing it.</p>
+					<p>In other words, the client can now edit their own website just by describing what they want, tailoring it to a shifting audience without friction. They were delighted. I won&rsquo;t pretend the experience didn&rsquo;t unsettle me a little &mdash; I&rsquo;d essentially designed myself out of the equation. But I&rsquo;ve come to believe that evolving your value proposition alongside AI is the only way to avoid being displaced by it.</p>
+					<div class="cs-cta"><p>Want to talk through this project?</p><a class="btn btn--solid" href="#contact" data-close>Get in touch</a></div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<!-- Scroll to top -->
+	<button class="scroll-up" id="scrollUp" aria-label="Scroll to top">
+		<svg viewBox="0 0 24 24"><path d="M12 5l7 7-1.4 1.4L13 8.8V20h-2V8.8l-4.6 4.6L5 12z"/></svg>
+	</button>
+
+	<!-- Chatbot -->
+	<button id="chat-bubble" aria-label="Open chat" onclick="chatToggle()">
+		<svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+			<g class="bot-antenna"><rect x="11" y="1" width="2" height="3" rx="1"/><circle cx="12" cy="1.5" r="1.5"/></g>
+			<g class="bot-head">
+				<rect x="3" y="4" width="18" height="13" rx="2"/>
+				<rect x="7" y="8" width="3" height="3" rx="1" fill="#43486b"/>
+				<rect x="14" y="8" width="3" height="3" rx="1" fill="#43486b"/>
+				<rect x="8" y="13" width="8" height="2" rx="1" fill="#43486b"/>
+				<rect x="1" y="7" width="2" height="4" rx="1"/>
+				<rect x="21" y="7" width="2" height="4" rx="1"/>
+			</g>
+		</svg>
+	</button>
+	<div id="chat-window">
+		<div id="chat-header">
+			<div><p class="name">Assistant</p><p class="status">Online</p></div>
+			<button id="chat-close" onclick="chatToggle()" aria-label="Close chat">&times;</button>
+		</div>
+		<div id="chat-messages"></div>
+		<div id="chat-input-row">
+			<input id="chat-input" type="text" placeholder="Type a message&hellip;" onkeydown="if(event.key==='Enter') chatSend()" />
+			<button id="chat-send" onclick="chatSend()" aria-label="Send">
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+			</button>
+		</div>
+	</div>
+
+	<script src="assets/js/main.js?v=7"></script>
+	<script src="assets/js/personalize.js?v=11"></script>
+</body>
+</html>
