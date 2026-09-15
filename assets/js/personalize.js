@@ -21,7 +21,7 @@
 	// Onboarding "Other" reconciler: Claude suggests closer-matching categories
 	var RECONCILE_WEBHOOK = 'https://gomdeeu.app.n8n.cloud/webhook/onboarding-reconcile';
 	var SKILL_VALS = ['design', 'strategy', 'research', 'creative', 'automation'];
-	var SECTOR_VALS = ['fintech', 'events', 'wellness', 'delivery', 'learning', 'legal', 'relocation', 'industrial'];
+	var SECTOR_VALS = ['fintech', 'events', 'wellness', 'delivery', 'learning', 'legal', 'relocation', 'industrial', 'corporate'];
 
 	/* ---------- Questions ----------
 	   Options flagged `hidden: true` are never offered as buttons. They exist so
@@ -44,6 +44,13 @@
 		},
 		{
 			id: 'sector',
+			// `skippable` adds a "no preference" button below the options. A visitor
+			// who only cares about the skillset can answer one question and go
+			// straight to the portfolio; the sector dimension is simply left
+			// unanswered, and every downstream scorer already treats a missing
+			// sector as "don't weight it" rather than as an error.
+			skippable: true,
+			skipLabel: 'No preference &mdash; show me everything',
 			text: 'What sector are you most interested in?',
 			options: [
 				{ label: 'Fintech', val: 'fintech' },
@@ -54,6 +61,7 @@
 				{ label: 'Legal', val: 'legal', hidden: true },
 				{ label: 'Relocation', val: 'relocation', hidden: true },
 				{ label: 'Industrial', val: 'industrial', hidden: true },
+				{ label: 'Corporate', val: 'corporate', hidden: true },
 				{ label: 'Other', val: 'other' }
 			]
 		}
@@ -85,7 +93,10 @@
 		delivery: ['delivery', 'courier', 'logistic', 'last-mile', 'last mile', 'rider', 'fleet', 'gig econom'],
 		legal: ['legal', 'law firm', 'lawyer', 'attorney', 'litigation', 'counsel'],
 		relocation: ['relocation', 'relocat', 'visa', 'immigration', 'expat', 'digital nomad'],
-		industrial: ['industrial', 'manufactur', 'construction', 'heavy equipment', 'power tool']
+		industrial: ['industrial', 'manufactur', 'construction', 'heavy equipment', 'power tool'],
+		// Not an industry so much as a shape of employer: big-brand, in-house,
+		// long-cycle work. Used by the ?sector=corporate deep link below.
+		corporate: ['corporate', 'enterprise', 'in-house', 'inhouse', 'b2b', 'internal comms', 'internal communication', 'professional services', 'consultanc', 'blue chip', 'blue-chip']
 	};
 
 	/* ---------- About Me copy ----------
@@ -98,32 +109,32 @@
 
 	var ABOUT_VARIANTS = {
 		dflt: {
-			bio: 'I grew up between Madrid and California, and I&rsquo;ve spent the last 9 years working in product design, UX research, and emerging technology.',
+			bio: 'I grew up between Madrid and California, and I&rsquo;ve spent the last 10 years working in product design, UX research, and emerging technology.',
 			whatIDo: WHAT_I_DO_STANDARD,
 			close: 'Trilingual, bicultural, and comfortable anywhere from product design to brand storytelling to front-end code.'
 		},
 		design: {
-			bio: 'I grew up between Madrid and California, and I&rsquo;ve spent the last 9 years working in product design, UX research, and emerging technology.',
+			bio: 'I grew up between Madrid and California, and I&rsquo;ve spent the last 10 years working in product design, UX research, and emerging technology.',
 			whatIDo: WHAT_I_DO_STANDARD,
 			close: 'Trilingual, bicultural, and comfortable anywhere from product design to product strategy to front-end code.'
 		},
 		strategy: {
-			bio: 'I grew up between Madrid and California, and I&rsquo;ve spent the last 9 years working in product strategy, UX research, and emerging technology.',
+			bio: 'I grew up between Madrid and California, and I&rsquo;ve spent the last 10 years working in product strategy, UX research, and emerging technology.',
 			whatIDo: WHAT_I_DO_STANDARD,
 			close: 'Trilingual, bicultural, and comfortable anywhere from product strategy to branding to optimization.'
 		},
 		research: {
-			bio: 'I grew up between Madrid and California, and I&rsquo;ve spent the last 9 years working in UX research, product design, and emerging technology.',
+			bio: 'I grew up between Madrid and California, and I&rsquo;ve spent the last 10 years working in UX research, product design, and emerging technology.',
 			whatIDo: 'My work is built on three habits. I am data driven: every design decision I make is backed by analytics, A/B tests, or user interviews, and every project gets a KPI. I am human centered: I get as close to the user as I can &mdash; that has meant 30+ interviews a year at WSA, 4,000 customer emails at Hilti, and riding a bike around Madrid as a Deliveroo courier to understand the job I was designing for. And I work AI-first: I use generative AI and automation (n8n, agentic workflows, Claude) to multiply output without diluting craft.',
 			close: 'Trilingual, bicultural, and comfortable anywhere from discovery research to product design to front-end code.'
 		},
 		creative: {
-			bio: 'I grew up between Madrid and California, and I&rsquo;ve spent the last 9 years working in visual craft, communications, and emerging technology.',
+			bio: 'I grew up between Madrid and California, and I&rsquo;ve spent the last 10 years working in visual craft, communications, and emerging technology.',
 			whatIDo: 'My work is built on three habits. I am data driven: every design decision I make is backed by data, and every project gets a KPI. I am human centered: I get as close to the target audience as I can, whether that means conducting interviews or immersing myself in the demographics I&rsquo;m designing for. And I work AI-first: I use generative AI and automation (n8n, agentic workflows, Claude) to multiply output without diluting craft.',
 			close: 'Trilingual, bicultural, and comfortable anywhere from design to strategy to communications.'
 		},
 		automation: {
-			bio: 'I grew up between Madrid and California, and I&rsquo;ve spent the last 9 years working in product design, automation, and emerging technology.',
+			bio: 'I grew up between Madrid and California, and I&rsquo;ve spent the last 10 years working in product design, automation, and emerging technology.',
 			whatIDo: WHAT_I_DO_STANDARD,
 			close: 'Trilingual, bicultural, and comfortable anywhere from product design to automation to front-end code.'
 		}
@@ -155,9 +166,37 @@
 		serviceclubai:  { skills: ['creative', 'automation'], sectors: ['delivery'] },
 		gomde:          { skills: ['strategy', 'automation'], sectors: ['wellness'] },
 		holiday:        { skills: ['design', 'creative'], sectors: ['legal'] },
-		kremsegg:       { skills: ['design', 'automation'], sectors: ['learning', 'wellness'] },
+		kremsegg:       { skills: ['automation'], sectors: ['learning', 'wellness'] },
 		gcbranding:     { skills: ['creative'], sectors: ['events'] }
 	};
+
+	/* ---------- Curated deep-link views ----------
+	   The tag scorer can only reorder cards and reveal conditional ones. It has no
+	   way to take a default-visible card OFF the page, which is what a curated
+	   recruiter link needs: ?skill=design&sector=corporate is sent to employers who
+	   should see the in-house client work and not the founder projects.
+
+	   Two parallel maps — SECTOR_VIEWS keyed by resolved sector, SKILL_VIEWS by
+	   resolved skill. Both use the same shape and are merged at apply time, so a
+	   card listed in either view's `suppress` is dropped, and either's `feature`
+	   pins it to the front.
+	     suppress - data-modal keys removed from the grid entirely, default cards
+	                included. Survives the portfolio filter tabs (see the
+	                .card--suppressed rule in style.css) and is undone by reset().
+	     feature  - data-modal keys pinned to the front of the grid, and revealed
+	                even if they are conditional cards this view would not
+	                normally unlock.
+	   Everything else about the view stays default. */
+	var SECTOR_VIEWS = {
+		corporate: {
+			suppress: ['nomads', 'hilti'],
+			feature: ['gcbranding', 'ria']
+		}
+	};
+	var SKILL_VIEWS = {
+		strategy: { suppress: ['holiday', 'riaUI'] }
+	};
+	var FEATURE_BOOST = 6;   // outranks the 2 (skill) + 3 (sector) a tag match can score
 
 	/* Cards that are hidden by default and only revealed for matching interests.
 	   Reveal when skill = Creative Direction, sector = Events, or the visitor's
@@ -225,7 +264,8 @@
 		'edtech': 'learning', 'learning': 'learning', 'education': 'learning', 'elearning': 'learning',
 		'wellness': 'wellness', 'health': 'wellness', 'mindfulness': 'wellness',
 		'delivery': 'delivery', 'logistics': 'delivery',
-		'legal': 'legal', 'relocation': 'relocation', 'industrial': 'industrial'
+		'legal': 'legal', 'relocation': 'relocation', 'industrial': 'industrial',
+		'corporate': 'corporate', 'enterprise': 'corporate', 'in-house': 'corporate', 'inhouse': 'corporate', 'b2b': 'corporate', 'internal-comms': 'corporate', 'client-work': 'corporate'
 	};
 
 	function answersFromUrl() {
@@ -248,10 +288,68 @@
 		return Object.keys(found).length ? found : null;
 	}
 
+	/* ---------- Skill-specific resumes (PDF + on-page) ----------
+	   ?skill=design   → Resume_Product_cbolorinos.pdf
+	   ?skill=research → Resume_UX_cbolorinos.pdf
+	   ?skill=creative → Resume_Branding_cbolorinos.pdf
+	   A link with one of these skills gets two things: the Resume button hands
+	   over that PDF, and the on-page Experience section shows exactly the bullets
+	   in that PDF, in the PDF's order (RESUME_VIEWS, keyed by data-bullet id).
+	   Only the URL triggers this. Values go through URL_ALIASES, so ?skill=ux or
+	   ?for=branding resolve the same way. Anything else keeps the default PDF and
+	   the normal tag-based bullets.
+
+	   KEEP IN SYNC: when a skill PDF changes, update its RESUME_VIEWS list AND the
+	   matching skill tag in data-bullet-tags (a bullet carries 'design' /
+	   'research' / 'creative' exactly when it appears in that PDF). */
+	var RESUME_PDFS = {
+		design: 'Resume_Product_cbolorinos.pdf',
+		research: 'Resume_UX_cbolorinos.pdf',
+		creative: 'Resume_Branding_cbolorinos.pdf'
+	};
+	var RESUME_VIEWS = {
+		design: ['wsa-3', 'wsa-0', 'wsa-2', 'wsa-5', 'fivemins-1', 'fivemins-2', 'swissborg-1', 'swissborg-3', 'ria-3', 'ria-4', 'serviceclub-1', 'serviceclub-3', 'saturno-3', 'saturno-2', 'ventures-1', 'ventures-5', 'ventures-4'],
+		research: ['wsa-5', 'wsa-0', 'wsa-2', 'wsa-4', 'fivemins-1', 'fivemins-2', 'swissborg-1', 'swissborg-2', 'ria-2', 'ria-1', 'serviceclub-1', 'serviceclub-3', 'saturno-2', 'saturno-5', 'ventures-5', 'ventures-1', 'ventures-6'],
+		creative: ['wsa-1', 'wsa-0', 'wsa-4', 'fivemins-1', 'fivemins-2', 'swissborg-2', 'swissborg-3', 'ria-1', 'ria-2', 'ria-3', 'ria-4', 'serviceclub-2', 'serviceclub-3', 'saturno-1', 'saturno-2', 'saturno-5', 'ventures-3', 'ventures-4', 'ventures-8']
+	};
+	// The PDF-backed skill named in the URL, or null.
+	function urlResumeSkill() {
+		var q;
+		try { q = new URLSearchParams(window.location.search); } catch (e) { return null; }
+		var words = [];
+		['skill', 'for'].forEach(function (k) {
+			(q.get(k) || '').split(/[,|\s]+/).forEach(function (x) { if (x.trim()) words.push(x); });
+		});
+		for (var i = 0; i < words.length; i++) {
+			var v = URL_ALIASES[String(words[i]).trim().toLowerCase().replace(/[_\s]+/g, '-')];
+			if (v && RESUME_PDFS[v]) return v;
+		}
+		return null;
+	}
+	function setResumeLink() {
+		var key = urlResumeSkill();
+		if (!key) return;
+		var links = document.querySelectorAll('a[href="resume_cbolorinos.pdf"]');
+		for (var i = 0; i < links.length; i++) links[i].setAttribute('href', RESUME_PDFS[key]);
+	}
+	// Show exactly the view's bullets, in its order; hide the rest.
+	function applyResumeView(timeline, ids) {
+		timeline.querySelectorAll('.tl[data-entry] ul').forEach(function (ul) {
+			var lis = Array.prototype.slice.call(ul.querySelectorAll('li[data-bullet]'));
+			var byId = {};
+			lis.forEach(function (li) { byId[li.getAttribute('data-bullet')] = li; });
+			ids.forEach(function (id) {
+				if (byId[id]) { byId[id].classList.remove('bullet-hidden'); ul.appendChild(byId[id]); delete byId[id]; }
+			});
+			Object.keys(byId).forEach(function (id) { byId[id].classList.add('bullet-hidden'); ul.appendChild(byId[id]); });
+		});
+	}
+
 	/* ---------- State ---------- */
 	var answers = {};        // { skill:{val,label}, sector:{val,label} }
 	var step = 0;
 	var snap = {};           // original DOM order snapshots
+	var usedFreeText = false; // did this run go through "Other" at any point?
 
 	/* ---------- DOM refs (resolved on init) ---------- */
 	var ob, obBody, obOptions, obProgress, obSkip;
@@ -261,7 +359,7 @@
 
 	/* ---------- Onboarding flow ---------- */
 	function openOnboarding() {
-		step = 0; answers = {};
+		step = 0; answers = {}; usedFreeText = false;
 		obBody.innerHTML = ''; obOptions.innerHTML = '';
 		ob.classList.add('is-open');
 		ob.setAttribute('aria-hidden', 'false');
@@ -303,6 +401,13 @@
 				});
 				obOptions.appendChild(b);
 			});
+			if (q.skippable) {
+				var s = document.createElement('button');
+				s.className = 'ob-opt ob-opt--pass';
+				s.innerHTML = '<span class="k">&rarr;</span><span>' + (q.skipLabel || 'Skip this question') + '</span>';
+				s.addEventListener('click', function () { passQuestion(q); });
+				obOptions.appendChild(s);
+			}
 		}, 260);
 	}
 
@@ -351,6 +456,7 @@
 	function reconcile(q, text) {
 		addMsg(text, 'user');
 		obOptions.innerHTML = '';
+		usedFreeText = true;   // earns the summary screen at the end
 
 		var hit = directHit(q, text);
 		if (hit) {
@@ -488,31 +594,63 @@
 
 	function finalize(q, label, val, custom, aiProjects) {
 		answers[q.id] = { val: val, label: label, custom: custom || null, aiProjects: (aiProjects && aiProjects.length) ? aiProjects : null };
+		advance();
+	}
+
+	// "No preference" on a skippable question. The dimension is deliberately left
+	// out of `answers` rather than stored as a sentinel — resolveKey, score(),
+	// setAboutCopy and filterResume all already branch on a falsy key, so an
+	// absent answer needs no special-casing anywhere downstream.
+	function passQuestion(q) {
+		addMsg('No preference', 'user');
+		delete answers[q.id];
+		advance();
+	}
+
+	function advance() {
 		obOptions.innerHTML = '';
 		step++;
 		// Skip any question that was already answered (e.g. pre-filled because the
 		// visitor's free-text answer belonged to the other dimension).
 		while (step < QUESTIONS.length && answers[QUESTIONS[step].id]) { step++; }
-		if (step < QUESTIONS.length) {
-			setTimeout(renderStep, 380);
-		} else {
-			// Done — explain how the page will be tailored and wait for an
-			// explicit "okay" so the visitor can actually read it.
-			obProgress.style.width = '100%';
-			var sLab = answers.skill ? answers.skill.label : '';
-			var secLab = answers.sector ? answers.sector.label : '';
-			addMsg('Perfect — I’ll bring Christian’s ' + sLab + ' work in ' + secLab +
-				' to the front: the most relevant projects, resume highlights and skills will appear first, and everything else stays right below.', 'bot');
-			var done = document.createElement('button');
-			done.className = 'ob-opt ob-opt--primary';
-			done.innerHTML = '<span class="k">&#10003;</span><span>Okay &mdash; show me</span>';
-			done.addEventListener('click', function () {
-				closeOnboarding();
-				applyPersonalization();
-				persist();
-			});
-			obOptions.appendChild(done);
+		if (step < QUESTIONS.length) { setTimeout(renderStep, 380); return; }
+		finish();
+	}
+
+	function apply() {
+		closeOnboarding();
+		applyPersonalization();
+		persist();
+	}
+
+	function finish() {
+		// Nothing to personalize (every question passed) — don't promise a tailored
+		// page and then deliver the default one.
+		if (!answers.skill && !answers.sector) { skip(); return; }
+
+		obProgress.style.width = '100%';
+		// Preset buttons need no summary — the visitor just read the labels they
+		// clicked, so restating them is a click that tells them nothing. Free text
+		// is different: it went through reconcile and may have landed on a category
+		// they didn't literally type, which is worth showing before the page moves.
+		if (!usedFreeText) {
+			setTimeout(apply, 420);   // let the last answer land before the overlay drops
+			return;
 		}
+
+		var sLab = answers.skill ? answers.skill.label : '';
+		var secLab = answers.sector ? answers.sector.label : '';
+		var focus;
+		if (sLab && secLab) { focus = 'Christian’s ' + sLab + ' work in ' + secLab; }
+		else if (sLab) { focus = 'Christian’s ' + sLab + ' work across every sector'; }
+		else { focus = 'Christian’s work in ' + secLab; }
+		addMsg('Perfect — I’ll bring ' + focus +
+			' to the front: the most relevant projects, resume highlights and skills will appear first, and everything else stays right below.', 'bot');
+		var done = document.createElement('button');
+		done.className = 'ob-opt ob-opt--primary';
+		done.innerHTML = '<span class="k">&#10003;</span><span>Okay &mdash; show me</span>';
+		done.addEventListener('click', apply);
+		obOptions.appendChild(done);
 	}
 
 	function skip() {
@@ -562,6 +700,10 @@
 		snap.grid = grid ? { parent: grid, kids: Array.prototype.slice.call(grid.children) } : null;
 		var expTimeline = document.querySelector('.resume .timeline');
 		snap.exp = expTimeline ? { parent: expTimeline, kids: Array.prototype.slice.call(expTimeline.children) } : null;
+		snap.bullets = [];
+		if (expTimeline) expTimeline.querySelectorAll('.tl[data-entry] ul').forEach(function (ul) {
+			snap.bullets.push({ parent: ul, kids: Array.prototype.slice.call(ul.children) });
+		});
 		snap.cols = [];
 		document.querySelectorAll('.skills__col').forEach(function (col) {
 			snap.cols.push({ parent: col, kids: Array.prototype.slice.call(col.children) });
@@ -638,6 +780,7 @@
 		if (snap.grid) snap.grid.kids.forEach(function (k) { snap.grid.parent.appendChild(k); });
 		if (snap.exp) snap.exp.kids.forEach(function (k) { snap.exp.parent.appendChild(k); });
 		snap.cols.forEach(function (c) { c.kids.forEach(function (k) { c.parent.appendChild(k); }); });
+		(snap.bullets || []).forEach(function (c) { c.kids.forEach(function (k) { c.parent.appendChild(k); }); });
 		// strip markers
 		document.querySelectorAll('.is-relevant').forEach(function (n) { n.classList.remove('is-relevant'); });
 		document.querySelectorAll('.card__pill, .tl__pill, .skills__pill').forEach(function (n) { n.remove(); });
@@ -646,6 +789,8 @@
 		showDefaultBullets();
 		// re-hide conditional cards (default view never shows them)
 		document.querySelectorAll('.card--conditional').forEach(function (c) { c.classList.remove('is-revealed'); c.classList.add('is-hidden'); });
+		// undo any curated-view suppression
+		document.querySelectorAll('.card--suppressed').forEach(function (c) { c.classList.remove('card--suppressed'); });
 		resetAboutCopy();
 		setResumeLoading(false);
 		if (banner) banner.classList.remove('is-on');
@@ -661,6 +806,17 @@
 		var sectorKey = resolveKey(answers.sector, SECTOR_SYN);
 		var skillText = answers.skill ? (answers.skill.custom || answers.skill.label).toLowerCase() : '';
 		var sectorText = answers.sector ? (answers.sector.custom || answers.sector.label).toLowerCase() : '';
+
+		// Curated views for this skill and sector, if any. Suppression/feature is the
+		// union of both — see the SECTOR_VIEWS / SKILL_VIEWS comment above.
+		var view = SECTOR_VIEWS[sectorKey] || null;
+		var skillView = SKILL_VIEWS[skillKey] || null;
+		function inView(list, key) {
+			if (!key) return false;
+			if (view && view[list] && view[list].indexOf(key) !== -1) return true;
+			if (skillView && skillView[list] && skillView[list].indexOf(key) !== -1) return true;
+			return false;
+		}
 
 		// AI relevance ranking: Claude reads the resume + case studies and returns
 		// project keys ranked by fit to the visitor's free-text answer. Rank 0 gets
@@ -692,6 +848,7 @@
 			var reveal = (skillKey && rSkill.indexOf(skillKey) !== -1) ||
 				(sectorKey && rSector.indexOf(sectorKey) !== -1) ||
 				!!aiRank[c.getAttribute('data-modal')] ||
+				inView('feature', c.getAttribute('data-modal')) ||
 				mentionsAny(kwSet, skillText) || mentionsAny(kwSet, sectorText);
 			c.classList.toggle('is-revealed', reveal);   // is-revealed = revealed by the visitor's interests
 			c.classList.toggle('is-hidden', !reveal);
@@ -712,11 +869,19 @@
 		var grid = document.getElementById('grid');
 		if (grid) {
 			var cards = Array.prototype.slice.call(grid.querySelectorAll('.card'));
+			// Suppression first: a suppressed card is off the page, so it should never
+			// pick up an ordering position or a "For you" pill.
+			cards.forEach(function (c) {
+				c.classList.toggle('card--suppressed', inView('suppress', c.getAttribute('data-modal')));
+			});
 			var scored = cards.map(function (c, i) {
 				var key = c.getAttribute('data-modal');
 				var tags = PROJECT_TAGS[key] || { skills: [], sectors: [] };
 				var title = (c.querySelector('h3') || {}).textContent || '';
-				return { el: c, sc: score(tags, title) + (aiRank[key] || 0), i: i };
+				var sc = score(tags, title) + (aiRank[key] || 0);
+				if (inView('feature', key)) { sc += FEATURE_BOOST; }
+				if (inView('suppress', key)) { sc = -1; }
+				return { el: c, sc: sc, i: i };
 			});
 			scored.sort(function (a, b) { return b.sc - a.sc || a.i - b.i; });
 			scored.forEach(function (o) {
@@ -952,6 +1117,12 @@
 		// Tags decide first and are final. Anything they don't cover falls through
 		// to the scorer below; when every bullet is tagged this returns nothing and
 		// the page never touches the network.
+		// A ?skill= link for a PDF-backed skill mirrors that PDF exactly, but only
+		// while the visitor's answer is still that skill (re-running the onboarding
+		// with a different choice falls back to the normal tag rules).
+		var urlSkill = urlResumeSkill();
+		if (urlSkill && urlSkill === skillKey) { applyResumeView(timeline, RESUME_VIEWS[urlSkill]); return; }
+
 		entries = applyTagRules(entries, skillKey, sectorKey, true);
 		if (!entries.length) return;
 
@@ -1013,6 +1184,7 @@
 		ob = el('onboarding'); obBody = el('obBody'); obOptions = el('obOptions');
 		obProgress = el('obProgress'); obSkip = el('obSkip');
 		banner = el('persoBanner'); bannerMsg = el('persoBannerMsg');
+		setResumeLink();   // runs even if the onboarding markup is missing
 		if (!ob) return;
 
 		takeSnapshot();

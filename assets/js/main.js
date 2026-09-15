@@ -273,42 +273,80 @@
 		/* ---------- Modals ---------- */
 		var modalRoot = document.getElementById('modalRoot');
 		var overlay = document.getElementById('modalOverlay');
-		var modals = document.querySelectorAll('.modal');
 		var openModal = null;
 		var lastFocus = null;
 
-		function open(id) {
-			var m = document.querySelector('.modal[data-modal-id="' + id + '"]');
-			if (!m) return;
-			lastFocus = document.activeElement;
-			modalRoot.classList.add('is-open');
-			modalRoot.setAttribute('aria-hidden', 'false');
-			document.body.style.overflow = 'hidden';
-			requestAnimationFrame(function () { m.classList.add('is-active'); });
-			openModal = m;
-			// autoplay any videos
-			m.querySelectorAll('video').forEach(function (v) { v.play().catch(function () {}); });
+		function resetModal(m) {
+			m.querySelectorAll('.modal__scroll').forEach(function (s) { s.scrollTop = 0; });
+			m.querySelectorAll('video').forEach(function (v) { try { v.pause(); } catch (err) {} });
 		}
+
+		// Opens a case study by its data-modal-id. Safe to call while another modal
+		// is already open: the two crossfade in place and the modal root never
+		// toggles display, so there is no timing race between close and open.
+		function open(id) {
+			if (!id) return;
+			var m = document.querySelector('.modal[data-modal-id="' + id + '"]');
+			if (!m || m === openModal) return;
+
+			if (openModal) {
+				var prev = openModal;
+				prev.classList.remove('is-active');
+				setTimeout(function () { resetModal(prev); }, 400);
+			} else {
+				lastFocus = document.activeElement;
+				modalRoot.classList.add('is-open');
+				modalRoot.setAttribute('aria-hidden', 'false');
+				document.body.style.overflow = 'hidden';
+			}
+
+			openModal = m;
+			// Always start a newly opened case study at the top.
+			m.querySelectorAll('.modal__scroll').forEach(function (s) { s.scrollTop = 0; });
+			requestAnimationFrame(function () {
+				requestAnimationFrame(function () {
+					m.classList.add('is-active');
+					m.querySelectorAll('video').forEach(function (v) {
+						var p = v.play();
+						if (p && p.catch) p.catch(function () {});
+					});
+					var head = m.querySelector('.modal__close');
+					if (head) head.focus();
+				});
+			});
+		}
+
 		function close() {
 			if (!openModal) return;
-			openModal.classList.remove('is-active');
-			var m = openModal; openModal = null;
+			var m = openModal;
+			openModal = null;
+			m.classList.remove('is-active');
 			modalRoot.classList.remove('is-open');
 			modalRoot.setAttribute('aria-hidden', 'true');
 			document.body.style.overflow = '';
-			setTimeout(function () {
-				m.querySelectorAll('.modal__scroll').forEach(function (s) { s.scrollTop = 0; });
-			}, 300);
-			if (lastFocus) lastFocus.focus();
+			setTimeout(function () { resetModal(m); }, 400);
+			if (lastFocus && document.contains(lastFocus)) lastFocus.focus();
+			lastFocus = null;
 		}
 
-		cards.forEach(function (card) {
-			card.addEventListener('click', function () { open(card.getAttribute('data-modal')); });
-		});
-		overlay.addEventListener('click', close);
-		document.querySelectorAll('.modal__close').forEach(function (b) { b.addEventListener('click', close); });
-		document.querySelectorAll('.modal [data-close]').forEach(function (b) {
-			b.addEventListener('click', function () { close(); });
+		// Delegated so it keeps working after personalize.js reorders or re-renders
+		// cards, and so cross-links target the modal directly rather than its card
+		// (a conditional card hidden for this visitor is still reachable this way).
+		document.addEventListener('click', function (e) {
+			var goto = e.target.closest('[data-modal-goto]');
+			if (goto) {
+				e.preventDefault();
+				open(goto.getAttribute('data-modal-goto'));
+				return;
+			}
+			var card = e.target.closest('.card[data-modal]');
+			if (card) {
+				open(card.getAttribute('data-modal'));
+				return;
+			}
+			if (e.target.closest('.modal__close') || e.target.closest('.modal [data-close]') || e.target === overlay) {
+				close();
+			}
 		});
 		document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
 	});
