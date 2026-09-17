@@ -163,7 +163,6 @@
 		riaUI:          { skills: ['design'], sectors: ['fintech'] },
 		ria:            { skills: ['strategy', 'creative'], sectors: ['fintech'] },
 		serviceclub:    { skills: ['strategy', 'research', 'creative'], sectors: ['learning', 'delivery'] },
-		serviceclubai:  { skills: ['creative', 'automation'], sectors: ['delivery'] },
 		gomde:          { skills: ['strategy', 'automation'], sectors: ['wellness'] },
 		holiday:        { skills: ['design', 'creative'], sectors: ['legal'] },
 		kremsegg:       { skills: ['automation'], sectors: ['learning', 'wellness'] },
@@ -194,7 +193,8 @@
 		}
 	};
 	var SKILL_VIEWS = {
-		strategy: { suppress: ['holiday', 'riaUI'] }
+		strategy: { suppress: ['holiday', 'riaUI'] },
+		creative: { suppress: ['hilti', 'wsa', 'kremsegg'] }
 	};
 	var FEATURE_BOOST = 6;   // outranks the 2 (skill) + 3 (sector) a tag match can score
 
@@ -229,7 +229,7 @@
 		{ match: 'Ria Money',      skills: ['creative', 'design', 'strategy'],sectors: ['fintech'] },
 		{ match: 'Service Club',   skills: ['creative', 'strategy', 'research'], sectors: ['delivery', 'learning'] },
 		{ match: 'Saturno',        skills: ['design', 'creative'],            sectors: ['legal'] },
-		{ match: 'Product Strategy',skills: ['strategy', 'design', 'automation', 'research'],sectors: ['wellness', 'relocation', 'learning'] }
+		{ match: 'Independent Projects',skills: ['strategy', 'design', 'automation', 'research'],sectors: ['wellness', 'relocation', 'learning'] }
 	];
 	// Skills categories matched by a keyword found in the <h4>
 	var SKILL_ITEM_TAGS = [
@@ -292,6 +292,9 @@
 	   ?skill=design   → Resume_Product_cbolorinos.pdf
 	   ?skill=research → Resume_UX_cbolorinos.pdf
 	   ?skill=creative → Resume_Branding_cbolorinos.pdf
+	   ?skill=corporate → Resume.pdf (Resume button only; the corporate curated
+	                      view still comes from SECTOR_VIEWS, since URL words
+	                      resolve by value, not by parameter name)
 	   A link with one of these skills gets two things: the Resume button hands
 	   over that PDF, and the on-page Experience section shows exactly the bullets
 	   in that PDF, in the PDF's order (RESUME_VIEWS, keyed by data-bullet id).
@@ -305,12 +308,13 @@
 	var RESUME_PDFS = {
 		design: 'Resume_Product_cbolorinos.pdf',
 		research: 'Resume_UX_cbolorinos.pdf',
-		creative: 'Resume_Branding_cbolorinos.pdf'
+		creative: 'Resume_Branding_cbolorinos.pdf',
+		corporate: 'Resume.pdf'   // ?skill=corporate — download only; no RESUME_VIEWS entry, so on-page bullets use the normal rules
 	};
 	var RESUME_VIEWS = {
-		design: ['wsa-3', 'wsa-0', 'wsa-2', 'wsa-5', 'fivemins-1', 'fivemins-2', 'swissborg-1', 'swissborg-3', 'ria-3', 'ria-4', 'serviceclub-1', 'serviceclub-3', 'saturno-3', 'saturno-2', 'ventures-1', 'ventures-5', 'ventures-4'],
-		research: ['wsa-5', 'wsa-0', 'wsa-2', 'wsa-4', 'fivemins-1', 'fivemins-2', 'swissborg-1', 'swissborg-2', 'ria-2', 'ria-1', 'serviceclub-1', 'serviceclub-3', 'saturno-2', 'saturno-5', 'ventures-5', 'ventures-1', 'ventures-6'],
-		creative: ['wsa-1', 'wsa-0', 'wsa-4', 'fivemins-1', 'fivemins-2', 'swissborg-2', 'swissborg-3', 'ria-1', 'ria-2', 'ria-3', 'ria-4', 'serviceclub-2', 'serviceclub-3', 'saturno-1', 'saturno-2', 'saturno-5', 'ventures-3', 'ventures-4', 'ventures-8']
+		design: ['wsa-3', 'wsa-0', 'wsa-2', 'wsa-5', 'fivemins-1', 'fivemins-2', 'swissborg-1', 'swissborg-3', 'ria-3', 'ria-4', 'saturno-3', 'saturno-2', 'saturno-6', 'ventures-kremsegg', 'ventures-hilti'],
+		research: ['wsa-5', 'wsa-0', 'wsa-2', 'fivemins-1', 'fivemins-2', 'swissborg-1', 'swissborg-3', 'ria-3', 'ria-4', 'saturno-2', 'saturno-6', 'ventures-hilti', 'ventures-serviceclub-research'],
+		creative: ['wsa-1', 'wsa-0', 'wsa-4', 'fivemins-1', 'fivemins-2', 'swissborg-2', 'swissborg-3', 'ria-1', 'ria-2', 'ria-3', 'ria-4', 'saturno-1', 'saturno-2', 'saturno-5', 'ventures-serviceclub-growth', 'ventures-websites']
 	};
 	// The PDF-backed skill named in the URL, or null.
 	function urlResumeSkill() {
@@ -350,6 +354,10 @@
 	var step = 0;
 	var snap = {};           // original DOM order snapshots
 	var usedFreeText = false; // did this run go through "Other" at any point?
+	// "For you" / "Most relevant to you" markers (pills + gold outlines) appear only
+	// when the visitor chose a custom view via the Personalize view button. Deep
+	// links (?skill=…) tailor the page silently, with no markers.
+	var showMarkers = false;
 
 	/* ---------- DOM refs (resolved on init) ---------- */
 	var ob, obBody, obOptions, obProgress, obSkip;
@@ -618,6 +626,7 @@
 	}
 
 	function apply() {
+		showMarkers = true;
 		closeOnboarding();
 		applyPersonalization();
 		persist();
@@ -662,7 +671,7 @@
 
 	/* ---------- Persistence ---------- */
 	function persist() {
-		store.setItem(STORE_KEY, JSON.stringify({ answers: answers }));
+		store.setItem(STORE_KEY, JSON.stringify({ answers: answers, markers: showMarkers }));
 	}
 
 	/* ---------- Helpers ---------- */
@@ -886,7 +895,7 @@
 			scored.sort(function (a, b) { return b.sc - a.sc || a.i - b.i; });
 			scored.forEach(function (o) {
 				grid.appendChild(o.el);
-				if (o.sc > 0) {
+				if (o.sc > 0 && showMarkers) {
 					o.el.classList.add('is-relevant');
 					if (!o.el.querySelector('.card__pill')) {
 						var pill = document.createElement('span');
@@ -917,7 +926,7 @@
 			// each role are already filtered to the visitor — no "Relevant to you"
 			// pill either. The gold panel outline is the only marker.
 			scoredR.forEach(function (o) {
-				if (o.sc > 0) { o.el.classList.add('is-relevant'); }
+				if (o.sc > 0 && showMarkers) { o.el.classList.add('is-relevant'); }
 			});
 		}
 
@@ -936,7 +945,7 @@
 			scoredS.sort(function (a, b) { return (b.rel ? 1 : 0) - (a.rel ? 1 : 0) || a.i - b.i; });
 			scoredS.forEach(function (o) {
 				col.appendChild(o.el);
-				if (o.rel) {
+				if (o.rel && showMarkers) {
 					o.el.classList.add('is-relevant');
 					if (!o.el.querySelector('.skills__pill')) {
 						var pill = document.createElement('span');
@@ -1219,16 +1228,12 @@
 
 		if (saved && saved.answers) {
 			answers = saved.answers;
+			showMarkers = !!saved.markers;
 			applyPersonalization();       // apply silently, no overlay
-		} else if (saved && saved.skipped) {
-			showFab();                    // they skipped this session; just offer the button
 		} else {
-			// First load this session → show the onboarding shortly after the preloader
-			window.addEventListener('load', function () {
-				setTimeout(openOnboarding, 750);
-			});
-			// Fallback if 'load' already fired
-			if (document.readyState === 'complete') setTimeout(openOnboarding, 750);
+			// No automatic onboarding: the chatbot only opens when the visitor clicks
+			// "Personalize view" (bottom left).
+			showFab();
 		}
 	}
 

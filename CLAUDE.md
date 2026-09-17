@@ -32,6 +32,12 @@ stale file.
 
 ## Personalization engine (`personalize.js`)
 
+**Onboarding is opt-in (16 Sep 2026).** The chatbot never opens on its own; it opens
+only from the bottom-left "Personalize view" button, which is always visible. The
+"For you" card pills, "Most relevant to you" skill pills and gold `is-relevant`
+outlines are gated on `showMarkers`, which is set only when the visitor finishes
+the chatbot. Deep links (`?skill=…`) still tailor the page but show no markers.
+
 Read the section banners in the file before editing — it is organized top to
 bottom as config → tag maps → flow → apply.
 
@@ -95,7 +101,7 @@ to the front, and revealed even if conditional). Suppression uses
 filter tabs in `main.js` toggle `.is-hidden` and would otherwise put the card
 back. `reset()` clears it. Currently one view: `corporate` — drops Nomads and
 Hilti, leads with the WSA Global Congress branding and the Ria corporate comms
-study. Reached at `?skill=design&sector=corporate`.
+study. Reached at `?skill=corporate` (also `?skill=design&sector=corporate`). `?skill=corporate` also swaps the Resume button to `Resume.pdf` via `RESUME_PDFS`.
 
 **Deep links** let a shared URL pre-answer the onboarding — `?for=design,fintech`,
 `?skill=research`, `?for=ai`. Aliases live in `URL_ALIASES`; unrecognized values
