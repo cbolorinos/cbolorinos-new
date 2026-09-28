@@ -19,28 +19,123 @@
 		if (!isTouch && !reduceMotion) {
 			document.body.classList.add('hide-native');
 			var dot = document.getElementById('cursorDot');
-			var ring = document.getElementById('cursorRing');
-			var mx = window.innerWidth / 2, my = window.innerHeight / 2;
-			var rx = mx, ry = my;
 			window.addEventListener('mousemove', function (e) {
-				mx = e.clientX; my = e.clientY;
-				dot.style.transform = 'translate(' + mx + 'px,' + my + 'px) translate(-50%,-50%)';
+				dot.style.transform = 'translate(' + e.clientX + 'px,' + e.clientY + 'px) translate(-50%,-50%)';
 			});
-			(function loop() {
-				rx += (mx - rx) * 0.18;
-				ry += (my - ry) * 0.18;
-				ring.style.transform = 'translate(' + rx + 'px,' + ry + 'px) translate(-50%,-50%)';
-				requestAnimationFrame(loop);
-			})();
-			var hoverSel = 'a, button, .card, .filter__btn, [data-cursor="link"]';
+			document.addEventListener('mouseleave', function () { dot.style.opacity = 0; });
+			document.addEventListener('mouseenter', function () { dot.style.opacity = 1; });
+		}
+
+		/* ---------- Proportional hover ----------
+		   Anything that lifted on CSS :hover had the same bug: the lift moved the
+		   element out from under the pointer at its trailing edge, which dropped
+		   :hover, which put the element back under the pointer — a strobe. Hover
+		   is now a 0..1 value published as --hv, computed from the pointer's
+		   distance to the element's LAYOUT box (offsetTop/offsetWidth, which CSS
+		   transforms do not affect), so what we measure can never be an echo of
+		   what we drew. Within a band of the edge the element is partly engaged,
+		   so approaching one eases it in instead of snapping. Only the nearest
+		   target engages, so neighbours never half-light. */
+		if (!isTouch) {
+			var HOVER_SEL = '#works .card, .hero__social a, .tl__panel, .skills__item, .scroll-up, .perso-fab, .ob-opt';
+			var MAX_BAND = 26;   /* px of approach over which hover ramps 0 -> 1 */
+			var targets = [];
+			var builtAt = 0;
+			var queued = false;
+			var ptrX = -99999, ptrY = -99999;
+			var linkHover = false;
+
+			/* fixed elements are laid out against the viewport, everything else
+			   against the page, so each is compared in its own coordinate space */
+			var isFixed = function (el) {
+				var n = el;
+				while (n && n.nodeType === 1) {
+					if (window.getComputedStyle(n).position === 'fixed') { return true; }
+					n = n.parentElement;
+				}
+				return false;
+			};
+
+			var rebuild = function () {
+				builtAt = Date.now();
+				var els = document.querySelectorAll(HOVER_SEL);
+				targets = [];
+				for (var i = 0; i < els.length; i++) {
+					var el = els[i];
+					var t = el._hvT;
+					if (!t) { t = el._hvT = { el: el, hv: 0, fixed: isFixed(el) }; }
+					targets.push(t);
+					if (!el.offsetParent && !t.fixed) { t.box = null; continue; }
+					var w = el.offsetWidth, h = el.offsetHeight;
+					if (!w || !h) { t.box = null; continue; }
+					var top = 0, left = 0, n = el;
+					while (n) { top += n.offsetTop; left += n.offsetLeft; n = n.offsetParent; }
+					t.box = { l: left, t: top, r: left + w, b: top + h };
+					/* small targets get a tighter band than a full portfolio card */
+					t.band = Math.max(8, Math.min(MAX_BAND, Math.min(w, h) * 0.28));
+				}
+			};
+
+			var setHv = function (t, v) {
+				if (Math.abs(t.hv - v) < 0.008) { return; }
+				t.hv = v;
+				t.el.style.setProperty('--hv', v.toFixed(3));
+			};
+
+			var applyHover = function () {
+				queued = false;
+				if (Date.now() - builtAt > 250) { rebuild(); }
+				var pageX = ptrX + (window.pageXOffset || 0);
+				var pageY = ptrY + (window.pageYOffset || 0);
+				var best = null, bestV = 0;
+				for (var i = 0; i < targets.length; i++) {
+					var t = targets[i], b = t.box;
+					if (!b) { continue; }
+					var x = t.fixed ? ptrX : pageX;
+					var y = t.fixed ? ptrY : pageY;
+					var dx = Math.max(b.l - x, 0, x - b.r);
+					var dy = Math.max(b.t - y, 0, y - b.b);
+					var d = Math.sqrt(dx * dx + dy * dy);
+					if (d >= t.band) { continue; }
+					var v = 1 - d / t.band;
+					v = v * v * (3 - 2 * v);   /* smoothstep, so the ramp has no corners */
+					if (v > bestV) { bestV = v; best = t; }
+				}
+				for (var j = 0; j < targets.length; j++) {
+					setHv(targets[j], targets[j] === best ? bestV : 0);
+				}
+				if (dot) {
+					var k = linkHover ? 1 : bestV;
+					var size = 9 + 11 * k;
+					dot.style.width = size.toFixed(1) + 'px';
+					dot.style.height = size.toFixed(1) + 'px';
+					dot.style.backgroundColor = 'rgb(' + Math.round(67 + 96 * k) + ',' +
+						Math.round(72 + 77 * k) + ',' + Math.round(107 + 17 * k) + ')';
+				}
+			};
+
+			var queueHover = function () {
+				if (!queued) { queued = true; requestAnimationFrame(applyHover); }
+			};
+			var invalidate = function () { builtAt = 0; queueHover(); };
+
+			var linkSel = 'a, button, .filter__btn, [data-cursor="link"]';
+			rebuild();
+			window.addEventListener('resize', invalidate);
+			window.addEventListener('scroll', queueHover, { passive: true });
+			window.addEventListener('mousemove', function (e) {
+				ptrX = e.clientX; ptrY = e.clientY; queueHover();
+			});
 			document.addEventListener('mouseover', function (e) {
-				if (e.target.closest(hoverSel)) { dot.classList.add('is-hover'); ring.classList.add('is-hover'); }
+				if (e.target.closest(linkSel)) { linkHover = true; queueHover(); }
 			});
 			document.addEventListener('mouseout', function (e) {
-				if (e.target.closest(hoverSel)) { dot.classList.remove('is-hover'); ring.classList.remove('is-hover'); }
+				if (e.target.closest(linkSel)) { linkHover = false; queueHover(); }
 			});
-			document.addEventListener('mouseleave', function () { dot.style.opacity = 0; ring.style.opacity = 0; });
-			document.addEventListener('mouseenter', function () { dot.style.opacity = 1; ring.style.opacity = 1; });
+			document.addEventListener('mouseleave', function () {
+				ptrX = -99999; ptrY = -99999; linkHover = false; queueHover();
+			});
+			document.addEventListener('click', function () { setTimeout(invalidate, 420); });
 		}
 
 		/* ---------- Magnetic buttons ---------- */

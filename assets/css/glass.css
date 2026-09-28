@@ -1,0 +1,211 @@
+/* =========================================================
+   Christian Bolorinos — Portfolio
+   GLASSMORPHISM THEME (light)
+   Loaded after style.css on index.html and index-glass.html.
+   Overrides surfaces only; layout, markup and JS are untouched.
+   Brand tokens (--ink, --cream, --gold-*, --navy-*) keep their
+   original light-theme values from style.css.
+   The previous dark version is kept in glass-dark.css.
+   ========================================================= */
+:root{
+	/* Glass recipe */
+	--glass-bg:radial-gradient(120% 70% at 0% 0%,rgba(255,255,255,.75),rgba(255,255,255,0) 55%),linear-gradient(135deg,rgba(255,255,255,.55),rgba(255,255,255,.28) 60%,rgba(255,255,255,.42));
+	--glass-bg-strong:radial-gradient(120% 70% at 0% 0%,rgba(255,255,255,.9),rgba(255,255,255,0) 55%),linear-gradient(135deg,rgba(255,255,255,.7),rgba(255,255,255,.4) 60%,rgba(255,255,255,.55));
+	--glass-border:1px solid rgba(255,255,255,.5);
+	--glass-blur:blur(28px) saturate(170%);
+	--glass-hi:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.35),inset 0 0 24px rgba(255,255,255,.35);
+	--glass-shadow:0 18px 50px rgba(67,72,107,.14);
+	/* Hover timing: long and soft so the pointer-driven --hv glides */
+	--glide:cubic-bezier(.22,.61,.36,1);
+	--glide-t:.7s;
+}
+
+::selection{background:rgba(188,172,143,.4);color:var(--ink)}
+
+/* ---------- Backdrop: animated light linear gradient, no orbs ----------
+   Two gradient layers drift on different, non-matching periods with linear
+   timing, so the colour field never visibly settles or pauses. */
+.bg-svg{display:none}
+.bg-gradient{
+	background:linear-gradient(125deg,#f7f5f0 0%,#ece3d2 16%,#e2e0f2 32%,#f3ede2 48%,#d9dcef 64%,#efe4d0 80%,#f4f1f8 100%);
+	background-size:400% 400%;opacity:1;
+	animation:glassFlow 32s linear infinite alternate;
+}
+.bg-gradient::after{
+	content:"";position:absolute;inset:0;mix-blend-mode:multiply;opacity:.7;
+	background:linear-gradient(235deg,rgba(255,255,255,0) 0%,rgba(116,120,159,.22) 22%,rgba(255,255,255,0) 42%,rgba(188,172,143,.28) 62%,rgba(255,255,255,0) 82%,rgba(116,120,159,.16) 100%);
+	background-size:350% 350%;
+	animation:glassFlow2 21s linear infinite alternate;
+}
+@keyframes glassFlow{
+	0%{background-position:0% 0%}
+	50%{background-position:100% 60%}
+	100%{background-position:40% 100%}
+}
+@keyframes glassFlow2{
+	0%{background-position:100% 0%}
+	100%{background-position:0% 100%}
+}
+.bg-grain{opacity:.03}
+
+/* ---------- Shared glass surface ---------- */
+.about__card,
+.tl__panel,
+.skills__item,
+.contact__card,
+.filter__btn,
+.hero__social a,
+.perso-banner,
+.cs-callout{
+	background:var(--glass-bg);
+	backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);
+	border:var(--glass-border);
+}
+.tl__panel,.skills__item,.contact__card,.perso-banner,.cs-callout{position:relative}
+/* Gradient rim: bright where light hits the top-left edge, fading around the sides */
+.about__card::before,.tl__panel::before,.skills__item::before,.contact__card::before,.perso-banner::before,.cs-callout::before{
+	content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;pointer-events:none;
+	background:linear-gradient(135deg,rgba(255,255,255,1),rgba(255,255,255,.35) 35%,rgba(163,149,124,.18) 60%,rgba(255,255,255,.8));
+	-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+	mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);
+}
+.about__card,.contact__card{box-shadow:var(--glass-hi),var(--glass-shadow)}
+.tl__panel,.skills__item{box-shadow:var(--glass-hi),0 calc(10px + 12px * var(--hv)) calc(30px + 26px * var(--hv)) rgba(67,72,107,calc(.1 + .08 * var(--hv)))}
+.skills__item{border:1px solid color-mix(in srgb,rgba(255,255,255,.5),var(--gold-1) calc(var(--hv) * 100%))}
+.contact__card:hover{box-shadow:var(--glass-hi),var(--shadow-md);background:var(--glass-bg-strong)}
+
+/* ---------- Buttons ---------- */
+.btn--solid{border-color:rgba(255,255,255,.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 12px 30px rgba(163,149,124,.35)}
+.btn--ghost{
+	background:rgba(255,255,255,.35);border-color:rgba(67,72,107,.4);
+	backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+	box-shadow:inset 0 1px 0 rgba(255,255,255,.8);
+}
+
+/* ---------- Navigation ---------- */
+.nav.is-scrolled{
+	background:linear-gradient(180deg,rgba(255,255,255,.6),rgba(255,255,255,.35));
+	backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);
+	border-bottom:1px solid rgba(255,255,255,.7);
+	box-shadow:0 10px 30px rgba(67,72,107,.1);
+}
+
+/* ---------- Hero ---------- */
+.hero__social a{box-shadow:var(--glass-hi),0 calc(12px * var(--hv)) calc(26px * var(--hv)) rgba(163,149,124,calc(.45 * var(--hv)))}
+
+/* ---------- Divider bands: frosted, tinted ---------- */
+.divider--facts,.divider--hire{
+	background:linear-gradient(62deg,rgba(19,19,30,.72),rgba(116,120,159,.68),rgba(67,72,107,.72),rgba(163,149,124,.7));
+	background-size:300% 300%;
+	backdrop-filter:blur(26px) saturate(170%);-webkit-backdrop-filter:blur(26px) saturate(170%);
+	border-top:1px solid rgba(255,255,255,.45);border-bottom:1px solid rgba(255,255,255,.25);
+	box-shadow:inset 0 1px 0 rgba(255,255,255,.3);
+}
+
+/* ---------- Portfolio ---------- */
+.filter__btn{box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}
+.filter__btn.is-active{border-color:rgba(255,255,255,.5)}
+.card{background:rgba(255,255,255,.3);box-shadow:0 calc(10px + 24px * var(--hv)) calc(30px + 56px * var(--hv)) rgba(67,72,107,calc(.12 + .12 * var(--hv)))}
+/* glass rim above the media */
+.card::after{content:"";position:absolute;inset:0;border-radius:inherit;border:1px solid rgba(255,255,255,.6);box-shadow:inset 0 1px 0 rgba(255,255,255,.7);pointer-events:none;z-index:3}
+/* full-bleed frosted title strip */
+.card__body{
+	inset:auto 0 0 0;padding:18px 22px 20px;border-radius:0;border:0;
+	background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,.5));
+	backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);
+	border-top:1px solid rgba(255,255,255,.9);
+	box-shadow:inset 0 1px 0 rgba(255,255,255,.8);
+	transform:none;
+}
+.card__body h3{color:var(--ink);font-size:17px}
+.card__go{color:var(--gold-deep)}
+
+/* ---------- Resume timeline ---------- */
+.tl::before{background:rgba(255,255,255,.85)}
+.tl__date{background:linear-gradient(135deg,rgba(67,72,107,.82),rgba(116,120,159,.78));border:1px solid rgba(255,255,255,.45);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
+
+/* ---------- Footer ---------- */
+.footer{background:rgba(19,19,30,.82);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.3)}
+
+/* ---------- Floating controls ---------- */
+.scroll-up{background:linear-gradient(135deg,rgba(67,72,107,.8),rgba(116,120,159,.75));border:1px solid rgba(255,255,255,.45);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),var(--shadow-md)}
+.perso-fab{background:rgba(255,255,255,.5);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 calc(18px + 12px * var(--hv)) calc(50px + 30px * var(--hv)) rgba(19,19,30,calc(.12 + .08 * var(--hv)))}
+#chat-bubble{border:1px solid rgba(255,255,255,.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 10px 30px rgba(19,19,30,.2)}
+
+/* ---------- Modals ---------- */
+.modal-overlay{background:rgba(19,19,30,.35);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.modal{
+	background:radial-gradient(120% 60% at 0% 0%,rgba(255,255,255,.6),rgba(255,255,255,0) 50%),rgba(255,255,255,.72);
+	backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);
+	border:1px solid rgba(255,255,255,.7);
+	box-shadow:inset 0 1px 0 rgba(255,255,255,.95),var(--shadow-lg);
+}
+.modal__head{background:linear-gradient(135deg,rgba(67,72,107,.85),rgba(116,120,159,.78));backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.35)}
+.modal__close{border:1px solid rgba(255,255,255,.35)}
+.cs-chip{background:rgba(255,255,255,.55)}
+.cs-tldr{background:rgba(255,255,255,.55)}
+
+/* ---------- Chat window ---------- */
+#chat-window{
+	background:radial-gradient(120% 60% at 0% 0%,rgba(255,255,255,.6),rgba(255,255,255,0) 50%),rgba(255,255,255,.7);
+	backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);
+	border:1px solid rgba(255,255,255,.7);
+	box-shadow:inset 0 1px 0 rgba(255,255,255,.95),var(--shadow-lg);
+}
+#chat-header{background:linear-gradient(135deg,rgba(67,72,107,.85),rgba(116,120,159,.78))}
+#chat-messages{background:transparent}
+.msg.bot{background:rgba(255,255,255,.7);border-color:rgba(255,255,255,.9)}
+#chat-input-row{background:rgba(255,255,255,.4);border-top:1px solid rgba(255,255,255,.7)}
+#chat-input{background:rgba(255,255,255,.6)}
+
+/* ---------- Onboarding ---------- */
+.onboarding__overlay{background:rgba(19,19,30,.4);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.onboarding__card{
+	background:radial-gradient(120% 60% at 0% 0%,rgba(255,255,255,.6),rgba(255,255,255,0) 50%),rgba(255,255,255,.72);
+	backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);
+	border:1px solid rgba(255,255,255,.7);
+	box-shadow:inset 0 1px 0 rgba(255,255,255,.95),var(--shadow-lg);
+}
+.onboarding__head{background:linear-gradient(135deg,rgba(67,72,107,.85),rgba(116,120,159,.78))}
+.ob-msg.bot{background:rgba(255,255,255,.65)}
+.ob-opt{background:rgba(255,255,255,.55)}
+.ob-opt:hover{background:rgba(255,255,255,.85)}
+.ob-other input{background:rgba(255,255,255,.65)}
+
+/* ---------- Personalization banner ---------- */
+.perso-banner{border-left:4px solid var(--gold-1);box-shadow:var(--glass-hi)}
+
+/* ---------- Mobile menu ---------- */
+@media (max-width:760px){
+	.nav__menu{background:rgba(247,245,240,.82);backdrop-filter:blur(26px) saturate(170%);-webkit-backdrop-filter:blur(26px) saturate(170%);border-left:1px solid rgba(255,255,255,.7)}
+}
+
+/* ---------- Gentler hovers ----------
+   main.js publishes a pointer-driven --hv (0..1). Longer, softer transitions
+   let every change in --hv glide instead of snapping, and the travel is a
+   touch smaller. */
+.card{
+	transform:translateY(calc(var(--hv) * -6px));
+	transition:transform var(--glide-t) var(--glide),box-shadow var(--glide-t) var(--glide),opacity .5s,filter .5s;
+}
+.card__media img,.card__media video{transform:scale(calc(1 + .05 * var(--hv)));transition:transform 1s var(--glide),filter .6s}
+.card__body{transition:background var(--glide-t) var(--glide),transform var(--glide-t) var(--glide)}
+.card__go{transition:opacity var(--glide-t) var(--glide),transform var(--glide-t) var(--glide)}
+.tl__panel,.skills__item{transform:translateY(calc(var(--hv) * -3px));transition:transform var(--glide-t) var(--glide),box-shadow var(--glide-t) var(--glide),border-color var(--glide-t) var(--glide)}
+.hero__social a,.perso-fab{transition:transform var(--glide-t) var(--glide),box-shadow var(--glide-t) var(--glide)}
+.hero__social a::before{transition:opacity var(--glide-t) var(--glide)}
+.hero__social svg{transition:fill var(--glide-t) var(--glide)}
+.ob-opt{transition:border-color .5s var(--glide),background .5s var(--glide),transform var(--glide-t) var(--glide)}
+.scroll-up{transition:opacity .5s var(--glide),visibility .5s,transform var(--glide-t) var(--glide),box-shadow var(--glide-t) var(--glide)}
+.contact__card{transition:transform var(--glide-t) var(--glide),box-shadow var(--glide-t) var(--glide),background var(--glide-t) var(--glide)}
+.contact__card:hover{transform:translateY(-4px)}
+.btn{transition:transform .6s var(--glide),box-shadow .6s var(--glide),background .5s var(--glide),color .5s var(--glide),border-color .5s var(--glide)}
+.btn--solid:hover,.btn--ghost:hover{transform:translateY(-2px)}
+.filter__btn{transition:all .5s var(--glide)}
+.nav__menu a,.nav__menu a::after{transition:color .45s var(--glide),width .55s var(--glide)}
+.cursor{transition:width .35s var(--glide),height .35s var(--glide),background-color .35s,opacity .4s}
+
+/* ---------- No backdrop-filter support: stay legible ---------- */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+	.about__card,.tl__panel,.skills__item,.contact__card,.card__body,.modal,#chat-window,.onboarding__card{background:rgba(255,255,255,.92)}
+}

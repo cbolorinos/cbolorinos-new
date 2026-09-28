@@ -111,32 +111,32 @@
 		dflt: {
 			bio: 'I grew up between Madrid and California, and I&rsquo;ve spent the last 10 years working in product design, UX research, and emerging technology.',
 			whatIDo: WHAT_I_DO_STANDARD,
-			close: 'Trilingual, bicultural, and comfortable anywhere from product design to brand storytelling to front-end code.'
+			close: 'Bilingual, bicultural, and comfortable anywhere from product design to brand storytelling to front-end code.'
 		},
 		design: {
 			bio: 'I grew up between Madrid and California, and I&rsquo;ve spent the last 10 years working in product design, UX research, and emerging technology.',
 			whatIDo: WHAT_I_DO_STANDARD,
-			close: 'Trilingual, bicultural, and comfortable anywhere from product design to product strategy to front-end code.'
+			close: 'Bilingual, bicultural, and comfortable anywhere from product design to product strategy to front-end code.'
 		},
 		strategy: {
 			bio: 'I grew up between Madrid and California, and I&rsquo;ve spent the last 10 years working in product strategy, UX research, and emerging technology.',
 			whatIDo: WHAT_I_DO_STANDARD,
-			close: 'Trilingual, bicultural, and comfortable anywhere from product strategy to branding to optimization.'
+			close: 'Bilingual, bicultural, and comfortable anywhere from product strategy to branding to optimization.'
 		},
 		research: {
 			bio: 'I grew up between Madrid and California, and I&rsquo;ve spent the last 10 years working in UX research, product design, and emerging technology.',
 			whatIDo: 'My work is built on three habits. I am data driven: every design decision I make is backed by analytics, A/B tests, or user interviews, and every project gets a KPI. I am human centered: I get as close to the user as I can &mdash; that has meant 30+ interviews a year at WSA, 4,000 customer emails at Hilti, and riding a bike around Madrid as a Deliveroo courier to understand the job I was designing for. And I work AI-first: I use generative AI and automation (n8n, agentic workflows, Claude) to multiply output without diluting craft.',
-			close: 'Trilingual, bicultural, and comfortable anywhere from discovery research to product design to front-end code.'
+			close: 'Bilingual, bicultural, and comfortable anywhere from discovery research to product design to front-end code.'
 		},
 		creative: {
 			bio: 'I grew up between Madrid and California, and I&rsquo;ve spent the last 10 years working in visual craft, communications, and emerging technology.',
 			whatIDo: 'My work is built on three habits. I am data driven: every design decision I make is backed by data, and every project gets a KPI. I am human centered: I get as close to the target audience as I can, whether that means conducting interviews or immersing myself in the demographics I&rsquo;m designing for. And I work AI-first: I use generative AI and automation (n8n, agentic workflows, Claude) to multiply output without diluting craft.',
-			close: 'Trilingual, bicultural, and comfortable anywhere from design to strategy to communications.'
+			close: 'Bilingual, bicultural, and comfortable anywhere from design to strategy to communications.'
 		},
 		automation: {
 			bio: 'I grew up between Madrid and California, and I&rsquo;ve spent the last 10 years working in product design, automation, and emerging technology.',
 			whatIDo: WHAT_I_DO_STANDARD,
-			close: 'Trilingual, bicultural, and comfortable anywhere from product design to automation to front-end code.'
+			close: 'Bilingual, bicultural, and comfortable anywhere from product design to automation to front-end code.'
 		}
 	};
 
@@ -188,13 +188,18 @@
 	   Everything else about the view stays default. */
 	var SECTOR_VIEWS = {
 		corporate: {
-			suppress: ['nomads', 'hilti'],
+			suppress: ['nomads', 'hilti', 'serviceclub'],
 			feature: ['gcbranding', 'ria']
 		}
 	};
 	var SKILL_VIEWS = {
+		// ?skill=design is the product/UI link: it shows the Ria Interface Design
+		// card (conditional, data-reveal-skill="design") and drops the Ria
+		// Corporate Communications card, which is the default-view Ria study.
+		design: { suppress: ['ria'] },
 		strategy: { suppress: ['holiday', 'riaUI'] },
-		creative: { suppress: ['hilti', 'wsa', 'kremsegg'] }
+		creative: { suppress: ['hilti', 'wsa', 'kremsegg'] },
+		automation: { suppress: ['riaUI', 'ria'] }
 	};
 	var FEATURE_BOOST = 6;   // outranks the 2 (skill) + 3 (sector) a tag match can score
 
@@ -826,6 +831,13 @@
 			if (skillView && skillView[list] && skillView[list].indexOf(key) !== -1) return true;
 			return false;
 		}
+		// feature wins over suppress when the two views disagree. ?skill=design
+		// suppresses 'ria', but ?skill=design&sector=corporate is the corporate
+		// link and features it — without this the corporate view would lose its
+		// lead card.
+		function suppressed(key) {
+			return inView('suppress', key) && !inView('feature', key);
+		}
 
 		// AI relevance ranking: Claude reads the resume + case studies and returns
 		// project keys ranked by fit to the visitor's free-text answer. Rank 0 gets
@@ -881,7 +893,7 @@
 			// Suppression first: a suppressed card is off the page, so it should never
 			// pick up an ordering position or a "For you" pill.
 			cards.forEach(function (c) {
-				c.classList.toggle('card--suppressed', inView('suppress', c.getAttribute('data-modal')));
+				c.classList.toggle('card--suppressed', suppressed(c.getAttribute('data-modal')));
 			});
 			var scored = cards.map(function (c, i) {
 				var key = c.getAttribute('data-modal');
@@ -889,7 +901,7 @@
 				var title = (c.querySelector('h3') || {}).textContent || '';
 				var sc = score(tags, title) + (aiRank[key] || 0);
 				if (inView('feature', key)) { sc += FEATURE_BOOST; }
-				if (inView('suppress', key)) { sc = -1; }
+				if (suppressed(key)) { sc = -1; }
 				return { el: c, sc: sc, i: i };
 			});
 			scored.sort(function (a, b) { return b.sc - a.sc || a.i - b.i; });

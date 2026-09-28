@@ -19,6 +19,9 @@ n8n webhook.
 ```
 index.html                  entire page + all 14 case-study modals (~860 lines)
 assets/css/style.css        all styles, CSS custom properties in :root
+assets/css/glass.css        glassmorphism theme layered on top of style.css
+                            (light animated gradient, frosted panels, soft hovers;
+                            dark variant kept in glass-dark.css)
 assets/js/main.js           UI behavior: preloader, cursor, nav, reveals,
                             typewriter, portfolio filter, modals, chatbot
 assets/js/personalize.js    the personalization engine (largest file)
@@ -123,6 +126,10 @@ to the local tag logic rather than leaving the page blank or mid-transition.
 Google Analytics (`G-DXTX6L52LL`) is inline in `<head>`.
 
 ## Conventions
+
+- The live look is the glassmorphism theme in `glass.css`, loaded after
+  `style.css` on both `index.html` and `index-glass.html`. Visual changes go in
+  `glass.css`; bump its `?v=` on both pages.
 
 - Tabs for indentation, in HTML, CSS, and JS alike.
 - Plain ES5-style JS in IIFEs, `var`, no modules, no transpiler. Match it.

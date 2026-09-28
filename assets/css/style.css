@@ -82,13 +82,12 @@ h1,h2,h3,h4{line-height:1.15;font-weight:700;color:var(--ink)}
 @keyframes load{0%{transform:translateX(-120%)}100%{transform:translateX(360%)}}
 
 /* ---------- Custom cursor ---------- */
-.cursor,.cursor-ring{position:fixed;top:0;left:0;z-index:9998;border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);will-change:transform}
-.cursor{width:8px;height:8px;background:var(--navy-1);transition:width .2s,height .2s,background .2s}
-.cursor-ring{width:38px;height:38px;border:1.5px solid rgba(67,72,107,.5);transition:width .3s var(--ease),height .3s var(--ease),background .3s,border-color .3s,opacity .3s}
-.cursor-ring.is-hover{width:64px;height:64px;background:rgba(163,149,124,.14);border-color:var(--gold-1)}
-.cursor.is-hover{background:var(--gold-1)}
-body.hide-native{cursor:none}
-body.hide-native a,body.hide-native button{cursor:none}
+.cursor{position:fixed;top:0;left:0;z-index:9998;border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);will-change:transform;width:9px;height:9px;background:var(--navy-1);transition:width .12s var(--ease),height .12s var(--ease),background-color .12s,opacity .3s}
+/* !important because the offenders outrank any reasonable selector here:
+   #chat-bubble is an id, and .card declares cursor:pointer further down the
+   file. A declared cursor also beats one merely inherited from body, so
+   hiding it on <body> alone was never going to reach them. */
+body.hide-native,body.hide-native *{cursor:none!important}
 
 /* ---------- Buttons ---------- */
 .btn{
@@ -131,10 +130,9 @@ body.hide-native a,body.hide-native button{cursor:none}
 .hero__lede{max-width:620px;margin:26px auto 0;font-size:19px;color:var(--text-soft)}
 .hero__actions{margin-top:38px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
 .hero__social{margin-top:40px;display:flex;gap:14px;justify-content:center}
-.hero__social a{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.6);border:1px solid var(--line);backdrop-filter:blur(6px);transition:transform .3s var(--ease),background .3s,box-shadow .3s}
-.hero__social svg{width:20px;height:20px;fill:var(--navy-1);transition:fill .3s}
-.hero__social a:hover{transform:translateY(-5px);background:linear-gradient(135deg,var(--gold-1),var(--gold-2));box-shadow:0 12px 26px rgba(163,149,124,.45)}
-.hero__social a:hover svg{fill:#fff}
+.hero__social a{--hv:0;position:relative;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.6);border:1px solid var(--line);backdrop-filter:blur(6px);transform:translateY(calc(var(--hv) * -5px));box-shadow:0 calc(12px * var(--hv)) calc(26px * var(--hv)) rgba(163,149,124,calc(.45 * var(--hv)));transition:transform .2s var(--ease),box-shadow .2s var(--ease)}
+.hero__social a::before{content:"";position:absolute;inset:0;border-radius:50%;background:linear-gradient(135deg,var(--gold-1),var(--gold-2));opacity:var(--hv);transition:opacity .2s var(--ease)}
+.hero__social svg{position:relative;z-index:1;width:20px;height:20px;fill:var(--navy-1);fill:color-mix(in srgb,var(--navy-1),#fff calc(var(--hv) * 100%));transition:fill .2s}
 .hero__scroll{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);z-index:2}
 .mouse{display:block;width:26px;height:42px;border:2px solid var(--navy-1);border-radius:16px;position:relative;opacity:.7}
 .wheel{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:4px;height:8px;border-radius:4px;background:var(--navy-1);animation:wheel 1.6s infinite}
@@ -173,7 +171,7 @@ body.hide-native a,body.hide-native button{cursor:none}
 .filter__btn:hover{border-color:var(--gold-1);color:var(--gold-deep)}
 .filter__btn.is-active{background:linear-gradient(135deg,var(--gold-1),var(--gold-2));color:#fff;border-color:transparent;box-shadow:0 8px 20px rgba(163,149,124,.4)}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
-.card{position:relative;border-radius:var(--radius);overflow:hidden;cursor:pointer;background:#000;box-shadow:var(--shadow-sm);transition:transform .5s var(--ease),box-shadow .5s var(--ease),opacity .4s,filter .4s}
+.card{--hv:0;position:relative;border-radius:var(--radius);overflow:hidden;cursor:pointer;background:#000;transform:translateY(calc(var(--hv) * -8px));box-shadow:0 calc(6px + 24px * var(--hv)) calc(24px + 56px * var(--hv)) rgba(19,19,30,calc(.08 + .14 * var(--hv)));transition:transform .18s var(--ease),box-shadow .18s var(--ease),opacity .4s,filter .4s}
 .card.is-hidden{display:none}
 /* Curated deep-link views (SECTOR_VIEWS in personalize.js) take a card off the
    page entirely. !important because the portfolio filter tabs in main.js toggle
@@ -181,14 +179,10 @@ body.hide-native a,body.hide-native button{cursor:none}
 .card.card--suppressed{display:none!important}
 .card.is-enter{opacity:0;transform:translateY(24px) scale(.97)}
 .card__media{aspect-ratio:4/3;overflow:hidden}
-.card__media img,.card__media video{width:100%;height:100%;object-fit:cover;transition:transform .7s var(--ease),filter .5s}
-.card__body{position:absolute;inset:auto 0 0 0;padding:22px;background:linear-gradient(to top,rgba(19,19,30,.9),rgba(19,19,30,.4) 55%,transparent);transform:translateY(8px);transition:transform .4s var(--ease)}
+.card__media img,.card__media video{width:100%;height:100%;object-fit:cover;transform:scale(calc(1 + .08 * var(--hv)));transition:transform .25s var(--ease),filter .5s}
+.card__body{position:absolute;inset:auto 0 0 0;padding:22px;background:linear-gradient(to top,rgba(19,19,30,.9),rgba(19,19,30,.4) 55%,transparent);transform:translateY(calc(8px - 8px * var(--hv)));transition:transform .25s var(--ease)}
 .card__body h3{color:#fff;font-size:18px;font-weight:700}
-.card__go{display:inline-block;margin-top:6px;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--gold-2);font-weight:600;opacity:0;transform:translateY(6px);transition:.4s var(--ease)}
-.card:hover{transform:translateY(-8px);box-shadow:var(--shadow-lg)}
-.card:hover .card__media img,.card:hover .card__media video{transform:scale(1.08)}
-.card:hover .card__body{transform:translateY(0)}
-.card:hover .card__go{opacity:1;transform:translateY(0)}
+.card__go{display:inline-block;margin-top:6px;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--gold-2);font-weight:600;opacity:var(--hv);transform:translateY(calc(6px - 6px * var(--hv)));transition:.25s var(--ease)}
 
 /* ---------- Resume timeline ---------- */
 .resume__subtitle{font-family:'PT Sans Narrow',sans-serif;text-transform:uppercase;letter-spacing:3px;font-size:20px;color:var(--gold-deep);margin:10px 0 34px}
@@ -197,8 +191,7 @@ body.hide-native a,body.hide-native button{cursor:none}
 .tl{position:relative;margin-bottom:26px}
 .tl::before{content:"";position:absolute;left:-28px;top:8px;width:14px;height:14px;border-radius:50%;background:var(--cream);border:3px solid var(--gold-1);transform:translateX(-1px);box-shadow:0 0 0 4px rgba(163,149,124,.15)}
 .tl__date{display:inline-block;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,var(--navy-1),var(--navy-2));padding:5px 14px;border-radius:50px;margin-bottom:12px}
-.tl__panel{background:rgba(255,255,255,.72);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:var(--radius);padding:24px 26px;box-shadow:var(--shadow-sm);transition:transform .4s var(--ease),box-shadow .4s var(--ease)}
-.tl__panel:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
+.tl__panel{--hv:0;background:rgba(255,255,255,.72);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:var(--radius);padding:24px 26px;transform:translateY(calc(var(--hv) * -4px));box-shadow:0 calc(6px + 12px * var(--hv)) calc(24px + 26px * var(--hv)) rgba(19,19,30,calc(.08 + .06 * var(--hv)));transition:transform .2s var(--ease),box-shadow .2s var(--ease)}
 .tl__panel h4{font-size:19px;margin-bottom:4px}
 .tl__panel h4 small{display:block;font-size:14px;font-weight:500;color:var(--gold-deep);margin-top:4px}
 .tl__panel ul{margin-top:14px;padding-left:20px}
@@ -206,8 +199,7 @@ body.hide-native a,body.hide-native button{cursor:none}
 
 /* ---------- Skills ---------- */
 .skills__grid{display:grid;grid-template-columns:1fr 1fr;gap:26px}
-.skills__item{background:rgba(255,255,255,.72);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:var(--radius);padding:24px 26px;margin-bottom:22px;box-shadow:var(--shadow-sm);transition:transform .4s var(--ease),box-shadow .4s var(--ease),border-color .4s}
-.skills__item:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:var(--gold-1)}
+.skills__item{--hv:0;background:rgba(255,255,255,.72);backdrop-filter:blur(10px);border:1px solid var(--line);border:1px solid color-mix(in srgb,var(--line),var(--gold-1) calc(var(--hv) * 100%));border-radius:var(--radius);padding:24px 26px;margin-bottom:22px;transform:translateY(calc(var(--hv) * -4px));box-shadow:0 calc(6px + 12px * var(--hv)) calc(24px + 26px * var(--hv)) rgba(19,19,30,calc(.08 + .06 * var(--hv)));transition:transform .2s var(--ease),box-shadow .2s var(--ease),border-color .2s}
 .skills__item h4{font-size:17px;color:var(--navy-1);margin-bottom:8px}
 .skills__item p{color:var(--text-soft);font-size:15px}
 
@@ -224,10 +216,9 @@ body.hide-native a,body.hide-native button{cursor:none}
 .footer p{color:rgba(255,255,255,.6);font-size:13px;letter-spacing:.5px}
 
 /* ---------- Scroll-up ---------- */
-.scroll-up{position:fixed;right:26px;bottom:96px;width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;background:linear-gradient(135deg,var(--navy-1),var(--navy-2));display:grid;place-items:center;box-shadow:var(--shadow-md);opacity:0;visibility:hidden;transform:translateY(14px);transition:.4s var(--ease);z-index:800}
-.scroll-up.is-visible{opacity:1;visibility:visible;transform:translateY(0)}
+.scroll-up{--hv:0;position:fixed;right:26px;bottom:96px;width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;background:linear-gradient(135deg,var(--navy-1),var(--navy-2));display:grid;place-items:center;box-shadow:var(--shadow-md);opacity:0;visibility:hidden;transform:translateY(14px);transition:.4s var(--ease);z-index:800}
+.scroll-up.is-visible{opacity:1;visibility:visible;transform:translateY(calc(var(--hv) * -4px))}
 .scroll-up svg{width:22px;height:22px;fill:#fff}
-.scroll-up:hover{transform:translateY(-4px)}
 
 /* ---------- Scroll progress bar ---------- */
 .scroll-progress{position:fixed;top:0;left:0;width:100%;height:3px;z-index:950;background:transparent;pointer-events:none}
@@ -333,13 +324,14 @@ body.hide-native a,body.hide-native button{cursor:none}
 .ob-msg.enter{opacity:0;transform:translateY(10px);animation:obIn .38s var(--ease) forwards}
 @keyframes obIn{to{opacity:1;transform:none}}
 .onboarding__options{padding:8px 18px 18px;display:flex;flex-direction:column;gap:8px}
-.ob-opt{display:flex;align-items:center;gap:11px;width:100%;text-align:left;font-family:inherit;font-size:14px;font-weight:600;color:var(--ink);background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;transition:border-color .25s var(--ease),background .25s var(--ease),transform .25s var(--ease)}
-.ob-opt:hover{border-color:var(--gold-1);background:var(--cream);transform:translateX(4px)}
+.ob-opt{display:flex;align-items:center;gap:11px;width:100%;text-align:left;font-family:inherit;font-size:14px;font-weight:600;color:var(--ink);background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;transform:translateX(calc(var(--hv) * 4px));transition:border-color .25s var(--ease),background .25s var(--ease),transform .2s var(--ease)}
+.ob-opt{--hv:0}
+.ob-opt:hover{border-color:var(--gold-1);background:var(--cream)}
 .ob-opt .k{width:24px;height:24px;border-radius:7px;background:linear-gradient(135deg,var(--gold-1),var(--gold-2));color:#fff;font-size:12px;font-weight:700;display:grid;place-items:center;flex-shrink:0}
 .ob-msg-typing{color:#9a938a;font-style:italic}
 .ob-opt--primary{background:linear-gradient(135deg,var(--gold-1),var(--gold-2));border-color:transparent;color:#fff;font-weight:700}
 .ob-opt--primary .k{background:rgba(255,255,255,.28)}
-.ob-opt--primary:hover{color:#fff;background:linear-gradient(135deg,var(--gold-1),var(--gold-2));transform:translateX(4px);box-shadow:0 8px 20px rgba(163,149,124,.45)}
+.ob-opt--primary:hover{color:#fff;background:linear-gradient(135deg,var(--gold-1),var(--gold-2));box-shadow:0 8px 20px rgba(163,149,124,.45)}
 .ob-opt--keep{opacity:.75}
 .ob-opt--keep .k{background:var(--navy-2)}
 .ob-opt--keep:hover{opacity:1}
@@ -385,9 +377,8 @@ body.hide-native a,body.hide-native button{cursor:none}
 @keyframes shimmer{0%{background-position:180% 0}100%{background-position:-80% 0}}
 
 /* ---------- Personalize FAB ---------- */
-.perso-fab{position:fixed;left:22px;bottom:26px;z-index:840;display:none;align-items:center;gap:8px;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border:1.5px solid var(--gold-1);color:var(--gold-deep);font-family:inherit;font-size:12.5px;font-weight:700;letter-spacing:.3px;padding:11px 16px;border-radius:50px;cursor:pointer;box-shadow:var(--shadow-md);transition:transform .3s var(--ease),box-shadow .3s var(--ease)}
+.perso-fab{--hv:0;position:fixed;left:22px;bottom:26px;z-index:840;display:none;align-items:center;gap:8px;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border:1.5px solid var(--gold-1);color:var(--gold-deep);font-family:inherit;font-size:12.5px;font-weight:700;letter-spacing:.3px;padding:11px 16px;border-radius:50px;cursor:pointer;transform:translateY(calc(var(--hv) * -3px));box-shadow:0 calc(18px + 12px * var(--hv)) calc(50px + 30px * var(--hv)) rgba(19,19,30,calc(.14 + .08 * var(--hv)));transition:transform .2s var(--ease),box-shadow .2s var(--ease)}
 .perso-fab.is-on{display:inline-flex}
-.perso-fab:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
 .perso-fab svg{width:15px;height:15px;fill:var(--gold-1)}
 
 /* ---------- Responsive ---------- */
@@ -407,7 +398,7 @@ body.hide-native a,body.hide-native button{cursor:none}
 	.cs-callout{flex-direction:column;text-align:center}
 	.modal__head{padding-right:56px}
 	/* Native cursor on touch devices */
-	.cursor,.cursor-ring{display:none}
+	.cursor{display:none}
 	body.hide-native{cursor:auto}
 }
 @media (max-width:520px){
@@ -421,5 +412,5 @@ body.hide-native a,body.hide-native button{cursor:none}
 @media (prefers-reduced-motion:reduce){
 	*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
 	.reveal{opacity:1;transform:none}
-	.cursor,.cursor-ring{display:none}
+	.cursor{display:none}
 }
